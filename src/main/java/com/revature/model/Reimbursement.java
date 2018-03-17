@@ -1,5 +1,6 @@
 package com.revature.model;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -75,11 +76,9 @@ public class Reimbursement implements Serializable, Comparable<Reimbursement> {
 
 	public Reimbursement() {}
 	
-	/**
-	 * It doesn't contain the receipt as a parameter.
-	 */
+	
 	public Reimbursement(int id, LocalDateTime requested, LocalDateTime resolved, double amount, String description,
-			Employee requester, Employee approver, ReimbursementStatus status, ReimbursementType type) {
+		 Employee requester, Employee approver, ReimbursementStatus status, ReimbursementType type) {
 		this.id = id;
 		this.requested = requested;
 		this.resolved = resolved;
