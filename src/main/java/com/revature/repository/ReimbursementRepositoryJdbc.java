@@ -26,6 +26,14 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 
 	private static Logger logger = Logger.getLogger(ReimbursementRepositoryJdbc.class);
 	
+    private static ReimbursementRepository repository = new ReimbursementRepositoryJdbc();
+	
+	private ReimbursementRepositoryJdbc(){}
+	
+	public static ReimbursementRepository getInstance(){
+		return repository;
+	}
+	
 	@Override
 	public boolean insert(Reimbursement reimbursement) {
 		
@@ -106,8 +114,63 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 	
 	@Override
 	public Reimbursement select(int reimbursementId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+        logger.trace("Getting a reimbursement based on particular reimbursement Id.");
+		
+		try(Connection connection = ConnectionUtil.getConnection()) {
+			
+			int parameterIndex = 0;
+	
+		    String sql = "SELECT RE.R_ID AS RE_R_ID , RE.R_REQUESTED AS RE_R_REQUESTED,"
+		    		+ " RE.R_RESOLVED AS RE_R_RESOLVED, RE.R_AMOUNT AS RE_R_AMOUNT,"
+		    		+ " RE.R_DESCRIPTION AS RE_R_DESCRIPTION, RE.R_RECEIPT AS RE_R_RECEIPT,"
+		    		+ " RE.EMPLOYEE_ID AS RE_EMPLOYEE_ID, RE.MANAGER_ID AS RE_MANAGER_ID,"
+		    		+ " RE.RS_ID AS RE_RS_ID, RE.RT_ID AS RE_RT_ID,E1.U_ID AS E1_U_ID,"
+		    		+ " E1.U_FIRSTNAME AS E1_U_FIRSTNAME, E1.U_LASTNAME AS E1_U_LASTNAME,"
+		    		+ " E1.U_USERNAME AS E1_U_USERNAME, E1.U_PASSWORD AS E1_U_PASSWORD,"
+		    		+ " E1.U_EMAIL AS E1_U_EMAIL, E1.UR_ID AS E1_UR_ID, R1.UR_TYPE AS R1_UR_TYPE,"
+		    		+ "E2.U_ID AS E2_U_ID, E2.U_FIRSTNAME AS E2_U_FIRSTNAME,"
+		    		+ " E2.U_LASTNAME AS E2_U_LASTNAME, E2.U_USERNAME AS E2_U_USERNAME,"
+		    		+ " E2.U_PASSWORD AS E2_U_PASSWORD, E2.U_EMAIL AS E2_U_EMAIL,"
+		    		+ " E2.UR_ID AS E2_UR_ID, R2.UR_TYPE AS R2_UR_TYPE,RS.RS_STATUS AS RS_RS_STATUS,"
+		    		+ " RT.RT_TYPE AS RT_RT_TYPE FROM REIMBURSEMENT RE,USER_T E1, USER_ROLE R1,"
+		    		+ " USER_T E2,USER_ROLE R2,REIMBURSEMENT_STATUS RS,REIMBURSEMENT_TYPE RT"
+		    		+ " WHERE RE.EMPLOYEE_ID = E1.U_ID AND E1.UR_ID = R1.UR_ID AND RE.MANAGER_ID = E2.U_ID"
+		    		+ " AND E2.UR_ID = R2.UR_ID AND RE.RS_ID = RS.RS_ID AND RE.RT_ID = RT.RT_ID "
+		    		+ "AND R_ID = ?";
+		   
+			PreparedStatement statement = connection.prepareStatement(sql);
+			
+			statement.setInt(++parameterIndex, reimbursementId);
+			
+			ResultSet result = statement.executeQuery();
+			
+			while(result.next()) {
+				return new Reimbursement(
+						result.getInt("RE_R_ID"),
+                        result.getTimestamp("RE_R_REQUESTED").toLocalDateTime(),   
+                        result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
+                        result.getDouble("RE_R_AMOUNT"),
+                        result.getString("RE_R_DESCRIPTION"),
+                        //ADDING RECEIPT HERE   
+                        new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
+                        		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
+                        		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
+                        		new EmployeeRole(result.getInt("E1_UR_ID"),result.getString("R1_UR_TYPE"))),
+                        new Employee(result.getInt("E2_U_ID"),result.getString("E2_U_FIRSTNAME"),
+                        		result.getString("E2_U_LASTNAME"), result.getString("E2_U_USERNAME"),
+                        		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
+                        		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
+                        new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+						);
+			}
+
+		} catch (SQLException e) {
+			logger.error("Error while selecting all reimbursements for this particular reimbursement Id.", e);
+		}
+		
+		return new Reimbursement();		
 	}
 
 	@Override
@@ -142,7 +205,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			statement.setInt(++parameterIndex, employeeId);
 			
 			ResultSet result = statement.executeQuery();
-            logger.trace("1 "+employeeId);
+
 			Set<Reimbursement> set = new HashSet<>();
 			
 			while(result.next()) {
@@ -167,7 +230,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			}
 			return set;
 		} catch (SQLException e) {
-			logger.error("Error while selecting all reimbursement for this particular employeeId.", e);
+			logger.error("Error while selecting all pending reimbursement for this particular employeeId.", e);
 		}
 		
 		return new HashSet<>();		
@@ -176,35 +239,225 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 	
 	@Override
 	public Set<Reimbursement> selectFinalized(int employeeId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+       logger.trace("Getting approved or declined reimburements for particular employee ID.");
+		
+		try(Connection connection = ConnectionUtil.getConnection()) {
+			
+			int parameterIndex = 0;
+	
+		    String sql = "SELECT RE.R_ID AS RE_R_ID , RE.R_REQUESTED AS RE_R_REQUESTED,"
+		    		+ " RE.R_RESOLVED AS RE_R_RESOLVED, RE.R_AMOUNT AS RE_R_AMOUNT,"
+		    		+ " RE.R_DESCRIPTION AS RE_R_DESCRIPTION, RE.R_RECEIPT AS RE_R_RECEIPT,"
+		    		+ " RE.EMPLOYEE_ID AS RE_EMPLOYEE_ID, RE.MANAGER_ID AS RE_MANAGER_ID,"
+		    		+ " RE.RS_ID AS RE_RS_ID, RE.RT_ID AS RE_RT_ID,E1.U_ID AS E1_U_ID,"
+		    		+ " E1.U_FIRSTNAME AS E1_U_FIRSTNAME, E1.U_LASTNAME AS E1_U_LASTNAME,"
+		    		+ " E1.U_USERNAME AS E1_U_USERNAME, E1.U_PASSWORD AS E1_U_PASSWORD,"
+		    		+ " E1.U_EMAIL AS E1_U_EMAIL, E1.UR_ID AS E1_UR_ID, R1.UR_TYPE AS R1_UR_TYPE,"
+		    		+ "E2.U_ID AS E2_U_ID, E2.U_FIRSTNAME AS E2_U_FIRSTNAME,"
+		    		+ " E2.U_LASTNAME AS E2_U_LASTNAME, E2.U_USERNAME AS E2_U_USERNAME,"
+		    		+ " E2.U_PASSWORD AS E2_U_PASSWORD, E2.U_EMAIL AS E2_U_EMAIL,"
+		    		+ " E2.UR_ID AS E2_UR_ID, R2.UR_TYPE AS R2_UR_TYPE,RS.RS_STATUS AS RS_RS_STATUS,"
+		    		+ " RT.RT_TYPE AS RT_RT_TYPE FROM REIMBURSEMENT RE,USER_T E1, USER_ROLE R1,"
+		    		+ " USER_T E2,USER_ROLE R2,REIMBURSEMENT_STATUS RS,REIMBURSEMENT_TYPE RT"
+		    		+ " WHERE RE.EMPLOYEE_ID = E1.U_ID AND E1.UR_ID = R1.UR_ID AND RE.MANAGER_ID = E2.U_ID"
+		    		+ " AND E2.UR_ID = R2.UR_ID AND RE.RS_ID = RS.RS_ID AND RE.RT_ID = RT.RT_ID "
+		    		+ " AND (RS.RS_STATUS = 'DECLINED' OR RS.RS_STATUS='APPROVED')"
+		    		+ " AND RE.EMPLOYEE_ID = ?";
+		   
+			PreparedStatement statement = connection.prepareStatement(sql);
+			
+			statement.setInt(++parameterIndex, employeeId);
+			
+			ResultSet result = statement.executeQuery();
+
+			Set<Reimbursement> set = new HashSet<>();
+			
+			while(result.next()) {
+				set.add(new Reimbursement(
+						result.getInt("RE_R_ID"),
+                        result.getTimestamp("RE_R_REQUESTED").toLocalDateTime(),   
+                        result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
+                        result.getDouble("RE_R_AMOUNT"),
+                        result.getString("RE_R_DESCRIPTION"),
+                        //ADDING RECEIPT HERE   
+                        new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
+                        		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
+                        		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
+                        		new EmployeeRole(result.getInt("E1_UR_ID"),result.getString("R1_UR_TYPE"))),
+                        new Employee(result.getInt("E2_U_ID"),result.getString("E2_U_FIRSTNAME"),
+                        		result.getString("E2_U_LASTNAME"), result.getString("E2_U_USERNAME"),
+                        		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
+                        		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
+                        new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+						));
+			}
+			return set;
+		} catch (SQLException e) {
+			logger.error("Error while selecting all approved or declined reimbursement for this particular employeeId.", e);
+		}
+		
+		return new HashSet<>();		
 	}
 
 	@Override
 	public Set<Reimbursement> selectAllPending() {
-		// TODO Auto-generated method stub
-		return null;
+		
+        logger.trace("Getting ALL pending reimburements.");
+		
+		try(Connection connection = ConnectionUtil.getConnection()) {
+	
+		    String sql = "SELECT RE.R_ID AS RE_R_ID , RE.R_REQUESTED AS RE_R_REQUESTED,"
+		    		+ " RE.R_RESOLVED AS RE_R_RESOLVED, RE.R_AMOUNT AS RE_R_AMOUNT,"
+		    		+ " RE.R_DESCRIPTION AS RE_R_DESCRIPTION, RE.R_RECEIPT AS RE_R_RECEIPT,"
+		    		+ " RE.EMPLOYEE_ID AS RE_EMPLOYEE_ID, RE.MANAGER_ID AS RE_MANAGER_ID,"
+		    		+ " RE.RS_ID AS RE_RS_ID, RE.RT_ID AS RE_RT_ID,E1.U_ID AS E1_U_ID,"
+		    		+ " E1.U_FIRSTNAME AS E1_U_FIRSTNAME, E1.U_LASTNAME AS E1_U_LASTNAME,"
+		    		+ " E1.U_USERNAME AS E1_U_USERNAME, E1.U_PASSWORD AS E1_U_PASSWORD,"
+		    		+ " E1.U_EMAIL AS E1_U_EMAIL, E1.UR_ID AS E1_UR_ID, R1.UR_TYPE AS R1_UR_TYPE,"
+		    		+ "E2.U_ID AS E2_U_ID, E2.U_FIRSTNAME AS E2_U_FIRSTNAME,"
+		    		+ " E2.U_LASTNAME AS E2_U_LASTNAME, E2.U_USERNAME AS E2_U_USERNAME,"
+		    		+ " E2.U_PASSWORD AS E2_U_PASSWORD, E2.U_EMAIL AS E2_U_EMAIL,"
+		    		+ " E2.UR_ID AS E2_UR_ID, R2.UR_TYPE AS R2_UR_TYPE,RS.RS_STATUS AS RS_RS_STATUS,"
+		    		+ " RT.RT_TYPE AS RT_RT_TYPE FROM REIMBURSEMENT RE,USER_T E1, USER_ROLE R1,"
+		    		+ " USER_T E2,USER_ROLE R2,REIMBURSEMENT_STATUS RS,REIMBURSEMENT_TYPE RT"
+		    		+ " WHERE RE.EMPLOYEE_ID = E1.U_ID AND E1.UR_ID = R1.UR_ID AND RE.MANAGER_ID = E2.U_ID"
+		    		+ " AND E2.UR_ID = R2.UR_ID AND RE.RS_ID = RS.RS_ID AND RE.RT_ID = RT.RT_ID "
+		    		+ "AND RS.RS_STATUS = 'PENDING'";
+		   
+			PreparedStatement statement = connection.prepareStatement(sql);
+						
+			ResultSet result = statement.executeQuery();
+			
+			Set<Reimbursement> set = new HashSet<>();
+			
+			while(result.next()) {
+				set.add(new Reimbursement(
+						result.getInt("RE_R_ID"),
+                        result.getTimestamp("RE_R_REQUESTED").toLocalDateTime(),   
+                        result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
+                        result.getDouble("RE_R_AMOUNT"),
+                        result.getString("RE_R_DESCRIPTION"),
+                        //ADDING RECEIPT HERE   
+                        new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
+                        		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
+                        		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
+                        		new EmployeeRole(result.getInt("E1_UR_ID"),result.getString("R1_UR_TYPE"))),
+                        new Employee(result.getInt("E2_U_ID"),result.getString("E2_U_FIRSTNAME"),
+                        		result.getString("E2_U_LASTNAME"), result.getString("E2_U_USERNAME"),
+                        		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
+                        		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
+                        new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+						));
+			}
+			return set;
+		} catch (SQLException e) {
+			logger.error("Error while selecting all PENDING reimbursement.", e);
+		}
+		
+		return new HashSet<>();		
 	}
 
 	@Override
 	public Set<Reimbursement> selectAllFinalized() {
-		// TODO Auto-generated method stub
-		return null;
+		
+        logger.trace("Getting ALL APPROVED OR DECLINED reimburements.");
+		
+		try(Connection connection = ConnectionUtil.getConnection()) {
+	
+		    String sql = "SELECT RE.R_ID AS RE_R_ID , RE.R_REQUESTED AS RE_R_REQUESTED,"
+		    		+ " RE.R_RESOLVED AS RE_R_RESOLVED, RE.R_AMOUNT AS RE_R_AMOUNT,"
+		    		+ " RE.R_DESCRIPTION AS RE_R_DESCRIPTION, RE.R_RECEIPT AS RE_R_RECEIPT,"
+		    		+ " RE.EMPLOYEE_ID AS RE_EMPLOYEE_ID, RE.MANAGER_ID AS RE_MANAGER_ID,"
+		    		+ " RE.RS_ID AS RE_RS_ID, RE.RT_ID AS RE_RT_ID,E1.U_ID AS E1_U_ID,"
+		    		+ " E1.U_FIRSTNAME AS E1_U_FIRSTNAME, E1.U_LASTNAME AS E1_U_LASTNAME,"
+		    		+ " E1.U_USERNAME AS E1_U_USERNAME, E1.U_PASSWORD AS E1_U_PASSWORD,"
+		    		+ " E1.U_EMAIL AS E1_U_EMAIL, E1.UR_ID AS E1_UR_ID, R1.UR_TYPE AS R1_UR_TYPE,"
+		    		+ "E2.U_ID AS E2_U_ID, E2.U_FIRSTNAME AS E2_U_FIRSTNAME,"
+		    		+ " E2.U_LASTNAME AS E2_U_LASTNAME, E2.U_USERNAME AS E2_U_USERNAME,"
+		    		+ " E2.U_PASSWORD AS E2_U_PASSWORD, E2.U_EMAIL AS E2_U_EMAIL,"
+		    		+ " E2.UR_ID AS E2_UR_ID, R2.UR_TYPE AS R2_UR_TYPE,RS.RS_STATUS AS RS_RS_STATUS,"
+		    		+ " RT.RT_TYPE AS RT_RT_TYPE FROM REIMBURSEMENT RE,USER_T E1, USER_ROLE R1,"
+		    		+ " USER_T E2,USER_ROLE R2,REIMBURSEMENT_STATUS RS,REIMBURSEMENT_TYPE RT"
+		    		+ " WHERE RE.EMPLOYEE_ID = E1.U_ID AND E1.UR_ID = R1.UR_ID AND RE.MANAGER_ID = E2.U_ID"
+		    		+ " AND E2.UR_ID = R2.UR_ID AND RE.RS_ID = RS.RS_ID AND RE.RT_ID = RT.RT_ID "
+		    		+ "AND (RS.RS_STATUS = 'DECLINED' OR RS.RS_STATUS='APPROVED')";
+		   
+			PreparedStatement statement = connection.prepareStatement(sql);
+						
+			ResultSet result = statement.executeQuery();
+			
+			Set<Reimbursement> set = new HashSet<>();
+			
+			while(result.next()) {
+				set.add(new Reimbursement(
+						result.getInt("RE_R_ID"),
+                        result.getTimestamp("RE_R_REQUESTED").toLocalDateTime(),   
+                        result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
+                        result.getDouble("RE_R_AMOUNT"),
+                        result.getString("RE_R_DESCRIPTION"),
+                        //ADDING RECEIPT HERE   
+                        new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
+                        		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
+                        		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
+                        		new EmployeeRole(result.getInt("E1_UR_ID"),result.getString("R1_UR_TYPE"))),
+                        new Employee(result.getInt("E2_U_ID"),result.getString("E2_U_FIRSTNAME"),
+                        		result.getString("E2_U_LASTNAME"), result.getString("E2_U_USERNAME"),
+                        		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
+                        		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
+                        new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+						));
+			}
+			return set;
+		} catch (SQLException e) {
+			logger.error("Error while selecting all APPROVED OR DECLINED reimbursement.", e);
+		}
+		
+		return new HashSet<>();		
+
 	}
 
 	@Override
 	public Set<ReimbursementType> selectTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		
+       logger.trace("Getting ALL  reimburements types.");
+		
+		try(Connection connection = ConnectionUtil.getConnection()) {
+	
+		    String sql = "SELECT * FROM REIMBURSEMENT_TYPE";
+		   
+			PreparedStatement statement = connection.prepareStatement(sql);
+						
+			ResultSet result = statement.executeQuery();
+			
+			Set<ReimbursementType> set = new HashSet<>();
+			
+			while(result.next()) {
+				set.add(new ReimbursementType(
+						result.getInt("RT_ID"),result.getString("RT_TYPE")	
+						));
+			}
+			
+			return set;
+			
+		} catch (SQLException e) {
+			logger.error("Error while selecting all reimbursement types.", e);
+		}
+		
+		return new HashSet<>();		
 	}
 	
+	/*
 	public static void main(String[] args){
 		
 		ReimbursementRepositoryJdbc repository = new ReimbursementRepositoryJdbc();
 
 		Employee employee = new Employee(1,"test","test","test","test","test@gmail.com",new EmployeeRole());
 		Employee manager = new Employee(21,"test","test","test","test","test@gmail.com",new EmployeeRole());
-		ReimbursementStatus status = new ReimbursementStatus(3,"APPROVED");
+		ReimbursementStatus status = new ReimbursementStatus(2,"DECLINED");
         //		Reimbursement Status
         //		3	APPROVED
         //		2	DECLINED
@@ -229,8 +482,13 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		
 		//logger.trace("Inserting a new Reimbursement: "+repository.insert(reimbursement));
 		//logger.trace(repository.update(reimbursement));
-		 logger.trace(repository.selectPending(1));
+		//logger.trace(repository.select(21));
+		 //logger.trace(repository.selectPending(1));
+		 //logger.trace(repository.selectAllPending());
+		 // logger.trace(repository.selectAllFinalized());
+		//logger.trace(repository.selectFinalized(1));
+		//logger.trace(repository.selectTypes());
 		
 	}
-
+    */
 }
