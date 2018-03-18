@@ -2,58 +2,78 @@ package com.revature.service;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.revature.model.Employee;
 import com.revature.model.Reimbursement;
 import com.revature.model.ReimbursementType;
+import com.revature.repository.ReimbursementRepositoryJdbc;
 
 public class ReimbursementServiceAlpha implements ReimbursementService {
-
+	
+    private static Logger logger = Logger.getLogger(ReimbursementServiceAlpha.class);
+	
+    private static ReimbursementService reimbursementService = new ReimbursementServiceAlpha();
+	
+	private ReimbursementServiceAlpha() { }
+	
+	public static ReimbursementService getInstance() {
+		return reimbursementService;
+	}
 	@Override
 	public boolean submitRequest(Reimbursement reimbursement) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		return ReimbursementRepositoryJdbc.getInstance().insert(reimbursement);
+		
 	}
 
 	@Override
 	public boolean finalizeRequest(Reimbursement reimbursement) {
-		// TODO Auto-generated method stub
-		return false;
+
+        return ReimbursementRepositoryJdbc.getInstance().update(reimbursement);
+		
 	}
 
 	@Override
 	public Reimbursement getSingleRequest(Reimbursement reimbursement) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return ReimbursementRepositoryJdbc.getInstance().select(reimbursement.getId());
+		
 	}
 
 	@Override
 	public Set<Reimbursement> getUserPendingRequests(Employee employee) {
-		// TODO Auto-generated method stub
-		return null;
+
+        return ReimbursementRepositoryJdbc.getInstance().selectPending(employee.getId());
+        
 	}
 
 	@Override
 	public Set<Reimbursement> getUserFinalizedRequests(Employee employee) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return ReimbursementRepositoryJdbc.getInstance().selectFinalized(employee.getId());
+		
 	}
 
 	@Override
 	public Set<Reimbursement> getAllPendingRequests() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return ReimbursementRepositoryJdbc.getInstance().selectAllPending();
+		
 	}
 
 	@Override
 	public Set<Reimbursement> getAllResolvedRequests() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return ReimbursementRepositoryJdbc.getInstance().selectAllFinalized();
+		
 	}
 
 	@Override
 	public Set<ReimbursementType> getReimbursementTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return ReimbursementRepositoryJdbc.getInstance().selectTypes();
+		
 	}
 
 }
