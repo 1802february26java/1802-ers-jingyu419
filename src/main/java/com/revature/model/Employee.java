@@ -52,6 +52,11 @@ public class Employee implements Serializable, Comparable<Employee> {
 	private EmployeeRole employeeRole;	
 
 	public Employee() {}
+	
+	public Employee(String username, String password){
+		this.username = username;
+		this.password = password;
+	}
 
 	public Employee(int id, String firstName, String lastName, String username, String password, String email,
 			EmployeeRole employeeRole) {

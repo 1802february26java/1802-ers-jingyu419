@@ -12,9 +12,18 @@ import org.apache.log4j.Logger;
  * Database Connection utility class. 
  *
  */
-public class ConnectionUtil {
+public final class ConnectionUtil {
 
-	 private static Logger logger = Logger.getLogger(ConnectionUtil.class);
+	  private static Logger logger = Logger.getLogger(ConnectionUtil.class);
+	 
+	 /* Make Tomcat now which database driver to use */
+		static {
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+			} catch (ClassNotFoundException e) {
+				logger.warn("Exception thrown adding oracle driver.", e);
+			}
+		}
 	  
 	  public static Connection getConnection() throws SQLException{
 		  
@@ -27,7 +36,7 @@ public class ConnectionUtil {
 		  return DriverManager.getConnection(url,username,password);
 	  }
 	  
-	  /**
+	/*
 	  public static void main(String[] args){
 		  
 		  try(Connection connection = ConnectionUtil.getConnection()) {
