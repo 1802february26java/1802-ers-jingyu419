@@ -306,22 +306,21 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 	
 	}
 
-	/*
-	public static void main(String[] args){
-		
-		EmployeeRepositoryJdbc repository = new EmployeeRepositoryJdbc();
-		Employee employee = new Employee(41,"test1","employee","testemployee","123456","jy350200@gmail.com",new EmployeeRole(1,"EMPLOYEE"));
-		//logger.trace(repository.insert(employee));
-		//logger.trace(repository.update(employee));
-		//logger.trace(repository.select(21));
-		//logger.trace(repository.select("testemployee"));
-		//logger.trace(repository.getPasswordHash(employee));
-       // logger.trace(repository.selectAll());
-        EmployeeToken token = new EmployeeToken(LocalDateTime.now(),employee);
-        //logger.trace(repository.insertEmployeeToken(token));
-       // logger.trace(repository.selectEmployeeToken(token));
-        logger.trace(repository.deleteEmployeeToken(token));
-	}
-	*/
+//	
+//	public static void main(String[] args){
+//		
+//		EmployeeRepositoryJdbc repository = new EmployeeRepositoryJdbc();
+//		Employee employee = new Employee(100,"test1","employee","testemployee","123456","jy350200@gmail.com",new EmployeeRole(1,"EMPLOYEE"));
+//		//logger.trace(repository.insert(employee));
+//		//logger.trace(repository.update(employee));
+//		//logger.trace(repository.select(21));
+//		//logger.trace(repository.select("testemployee"));
+//		//logger.trace(repository.getPasswordHash(employee));
+//       // logger.trace(repository.selectAll());
+//        EmployeeToken token = new EmployeeToken(LocalDateTime.now(),employee);
+//        //logger.trace(repository.insertEmployeeToken(token));
+//        logger.trace(repository.selectEmployeeToken(token));
+//        logger.trace(repository.deleteEmployeeToken(token));
+//	}
 
 }
