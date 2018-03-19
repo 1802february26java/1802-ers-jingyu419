@@ -6,7 +6,7 @@ public class ErrorControllerAlpha implements ErrorController {
 
 	@Override
 	public String showError(HttpServletRequest request) {
-		return "oops.html";
+		return "404.html";
 	}
 
 }

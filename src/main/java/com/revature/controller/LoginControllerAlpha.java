@@ -25,6 +25,7 @@ public class LoginControllerAlpha implements LoginController {
 	public Object login(HttpServletRequest request) {
 		//If user only want a view returned back
 		if(request.getMethod().equals("GET")) {
+			logger.trace("Thie action is GET, we return back a login view");
 			return "login.html";
 		}
 		//Below is for POST
@@ -32,6 +33,9 @@ public class LoginControllerAlpha implements LoginController {
 					new Employee(request.getParameter("username"),
 								 request.getParameter("password"))
 				);
+		
+		
+		logger.trace("The loggedEmployee is: "+loggedEmployee);
 		
 		/* If authentication failed */
 		if(loggedEmployee.getId() == 0) {
