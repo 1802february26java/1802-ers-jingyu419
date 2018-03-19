@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.revature.controller.EmployeeInformationControllerAlpha;
 import com.revature.controller.ErrorControllerAlpha;
+import com.revature.controller.HomeControllerAlpha;
 import com.revature.controller.LoginControllerAlpha;
 
 /**
@@ -51,6 +52,21 @@ public class RequestHelper {
 			
 		case "/ERS/register.do":
 			return EmployeeInformationControllerAlpha.getInstance().registerEmployee(request);
+		
+		case "/ERS/updateInformation.do":
+			return EmployeeInformationControllerAlpha.getInstance().updateEmployee(request);
+		
+		case "/ERS/viewInformation.do":
+			return EmployeeInformationControllerAlpha.getInstance().viewEmployeeInformation(request);
+		
+		case "/ERS/viewAllInformation.do":
+			return EmployeeInformationControllerAlpha.getInstance().viewAllEmployees(request);
+		
+		case "/ERS/isUserExisted.do":
+			return EmployeeInformationControllerAlpha.getInstance().usernameExists(request);
+		
+		case "/ERS/home.do":
+			return HomeControllerAlpha.getInstance().showEmployeeHome(request);
 			
 		default:
 			return new ErrorControllerAlpha().showError(request);

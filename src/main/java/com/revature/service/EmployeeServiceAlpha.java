@@ -73,6 +73,8 @@ public class EmployeeServiceAlpha implements EmployeeService {
 	@Override
 	public boolean updatePassword(Employee employee) {
 		
+		employee.setPassword(EmployeeRepositoryJdbc.getInstance().getPasswordHash(employee));
+		
 		return EmployeeRepositoryJdbc.getInstance().update(employee);
 		
 	}

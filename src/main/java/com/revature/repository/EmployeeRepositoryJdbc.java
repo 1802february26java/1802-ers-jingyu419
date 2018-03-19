@@ -68,7 +68,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 		int statementIndex = 0;
 		
 		String sql = "UPDATE USER_T SET U_FIRSTNAME = ?, U_LASTNAME = ?,"
-				+ " U_PASSWORD = GET_HASH(?), U_EMAIL = ? WHERE U_ID = ?";
+				+ " U_PASSWORD = ?, U_EMAIL = ? WHERE U_ID = ?";
 
 		PreparedStatement statement = connection.prepareStatement(sql);
 		
