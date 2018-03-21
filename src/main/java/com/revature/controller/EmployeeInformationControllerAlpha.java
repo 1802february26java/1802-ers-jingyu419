@@ -8,6 +8,7 @@ import com.revature.ajax.ClientMessage;
 import com.revature.model.Employee;
 import com.revature.model.EmployeeRole;
 import com.revature.service.EmployeeServiceAlpha;
+import com.revature.thread.EmailThread;
 
 
 public class EmployeeInformationControllerAlpha implements EmployeeInformationController {
@@ -63,6 +64,8 @@ public class EmployeeInformationControllerAlpha implements EmployeeInformationCo
 
 
 		if (EmployeeServiceAlpha.getInstance().createEmployee(employee)) {
+		    
+			sendEmailToEmployee(employee);
 			
 			return new ClientMessage("REGISTRATION SUCCESSFUL");
 			
@@ -166,6 +169,23 @@ public class EmployeeInformationControllerAlpha implements EmployeeInformationCo
 			   return new ClientMessage("This username has not been taken.");
 		   }
 			   
+	}
+	
+	private void sendEmailToEmployee(Employee employee){
+		
+		   String subject = "New Employee Registration";
+		   String body = "Here is your credential to ERS website.\n"+
+		                 "Username: "+employee.getUsername()+"\n"
+		                 +"Password: "+employee.getPassword()+"\n"
+		                 +"Please visit below ERS link to login.\n"
+		                 +"http://localhost:8085/ERS/";
+		   String email = employee.getEmail();
+		   
+		      EmailThread runnableThread = new EmailThread(subject,body,email);
+		        
+		        Thread t = new Thread(runnableThread);
+		        
+		        t.start(); 
 	}
 
 }
