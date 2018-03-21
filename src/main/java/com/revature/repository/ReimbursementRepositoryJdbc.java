@@ -45,12 +45,12 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			
 			String sql = "INSERT INTO REIMBURSEMENT(R_ID,R_REQUESTED,R_RESOLVED,"
 					+ "R_AMOUNT,R_DESCRIPTION,R_RECEIPT,EMPLOYEE_ID,MANAGER_ID,RS_ID,RT_ID)"
-					+ " VALUES(NULL,?,?,?,?,NULL,?,?,?,?)";
+					+ " VALUES(NULL,?,NULL,?,?,NULL,?,?,?,?)";
 
 			PreparedStatement statement = connection.prepareStatement(sql);								
 								
 			statement.setTimestamp(++parameterIndex, Timestamp.valueOf(reimbursement.getRequested()));
-			statement.setTimestamp(++parameterIndex, Timestamp.valueOf(reimbursement.getResolved()));
+			//statement.setTimestamp(++parameterIndex, Timestamp.valueOf(reimbursement.getResolved()));
 			statement.setDouble(++parameterIndex, reimbursement.getAmount());
 			statement.setString(++parameterIndex, reimbursement.getDescription());
 			
@@ -450,7 +450,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		return new HashSet<>();		
 	}
 	
-	/*
+	
 	public static void main(String[] args){
 		
 		ReimbursementRepositoryJdbc repository = new ReimbursementRepositoryJdbc();
@@ -477,10 +477,10 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 //			e.printStackTrace();
 //		}		
 		
-		Reimbursement reimbursement = new Reimbursement(21,LocalDateTime.now(),LocalDateTime.now(),
+		Reimbursement reimbursement = new Reimbursement(21,LocalDateTime.now(),null,
 				     1000D,"Saturday",employee,manager,status,type); 
 		
-		//logger.trace("Inserting a new Reimbursement: "+repository.insert(reimbursement));
+		logger.trace("Inserting a new Reimbursement: "+repository.insert(reimbursement));
 		//logger.trace(repository.update(reimbursement));
 		//logger.trace(repository.select(21));
 		 //logger.trace(repository.selectPending(1));
@@ -490,5 +490,5 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		//logger.trace(repository.selectTypes());
 		
 	}
-    */
+    
 }
