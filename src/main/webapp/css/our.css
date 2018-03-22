@@ -7,11 +7,12 @@ a {
 }
 
 .navbar-default .navbar-brand {
-    color: white;
+   font-family: 'Raleway',sans-serif;
+    color: rgb(255, 255, 255);
 }
 
 .navbar-default .navbar-brand:hover {
-    color: #d2d2d2;
+    color: #e2e2da;
 }
 
 .mainLogin{
@@ -45,3 +46,9 @@ a {
 .list-group-item{
     text-align: center;
 }
+ul {
+    text-align: center;
+    list-style: inside;
+  }
+
+

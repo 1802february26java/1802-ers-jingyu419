@@ -150,8 +150,12 @@ public class EmployeeInformationControllerAlpha implements EmployeeInformationCo
 			
 		}
 
+		/* Client is requesting the view. */
+		if(request.getParameter("fetch") == null) {
+			return "list-employees.html";
+		} else {
 		return EmployeeServiceAlpha.getInstance().getAllEmployeesInformation();
-		
+		}
 	}
 
 	

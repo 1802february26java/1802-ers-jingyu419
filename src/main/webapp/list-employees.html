@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
+    <title>Manager Home Page</title>
 
     <link rel="icon" href="images/expense.ico" />
 
@@ -25,7 +25,8 @@
     <!-- Our CSS -->
     <link rel="stylesheet" href="css/our.css" />
 </head>
-<body>
+
+ <body>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -61,35 +62,23 @@
             </div>
         </div>
     </nav>
-    <div class="col-md-4 col-md-offset-4">
+    
+      <div class="col-md-4 col-md-offset-4">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3>Register an employee</h3>
+                <h3>Employees</h3>
             </div>
-            <div class="form-group">
-                <input id="firstName" name="firstName" placeholder="First name" class="form-control" required autofocus>
-            </div>
-            <div class="form-group">
-                <input id="lastName" name="lastName" placeholder="Last name" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <input id="email" name="email" placeholder="email" type="email" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <input id="username" name="username" placeholder="Username" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <input id="password" name="password" placeholder="Password" type="password" class="form-control password-large" required>
-            </div>
-            <div class="form-group">
-                <input id="repeatPassword" placeholder="Repeat password" type="password" class="form-control password-large" required>
-            </div>
-            <div id="registrationMessage"></div>
-            <button id="submit" class="btn btn-md btn-primary btn-block">Submit</button>
+            <ul id="employeeList" class = "list-group">                
+            </ul>
+           
+            <div id="listMessage"></div>
+            <button id="getEmployees" class="btn btn-md btn-primary btn-block btn-list">GET</button>
             <div class="panel-footer">
             </div>
         </div>
     </div>
-    <script src="js/register.js"></script>
+    
+    <script src="js/list-customers.js"></script>
+
 </body>
 </html>

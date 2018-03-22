@@ -14,7 +14,7 @@ window.onload = () =>{
         let firstName = document.getElementById("firstName").value;
         let lastName = document.getElementById("lastName").value;
         let username = document.getElementById("username").value;
-
+        let email = document.getElementById("email").value;
         //AJAX Logic
         let xhr = new XMLHttpRequest();
 
@@ -29,7 +29,7 @@ window.onload = () =>{
             }
         };
           //Doing a HTTP to a specifc endpoint
-          xhr.open("POST",`register.do?firstName=${firstName}&lastName=${lastName}&username=${username}&password=${password}`);
+          xhr.open("POST",`register.do?firstName=${firstName}&lastName=${lastName}&username=${username}&password=${password}&email=${email}`);
      //Sending our request
      xhr.send();
 
@@ -39,6 +39,7 @@ window.onload = () =>{
 function disableAllComponets(){
     document.getElementById("firstName").setAttribute("disabled","disabled");
     document.getElementById("lastName").setAttribute("disabled","disabled");
+    document.getElementById("email").setAttribute("disabled","disabled");
     document.getElementById("username").setAttribute("disabled","disabled");
     document.getElementById("password").setAttribute("disabled","disabled");
     document.getElementById("repeatPassword").setAttribute("disabled","disabled");

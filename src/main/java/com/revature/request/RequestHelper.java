@@ -60,7 +60,7 @@ public class RequestHelper {
 		case "/ERS/viewInformation.do":
 			return EmployeeInformationControllerAlpha.getInstance().viewEmployeeInformation(request);
 		
-		case "/ERS/viewAllInformation.do":
+		case "/ERS/viewAllEmployee.do":
 			return EmployeeInformationControllerAlpha.getInstance().viewAllEmployees(request);
 		
 		case "/ERS/isUserExisted.do":
