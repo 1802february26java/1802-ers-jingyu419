@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.revature.ajax.ClientMessage;
 import com.revature.model.Employee;
 import com.revature.service.EmployeeServiceAlpha;
+import com.revature.util.FinalUtil;
 
 
 public class LoginControllerAlpha implements LoginController {
@@ -30,8 +31,8 @@ public class LoginControllerAlpha implements LoginController {
 		}
 		//Below is for POST
 		Employee loggedEmployee = EmployeeServiceAlpha.getInstance().authenticate(
-					new Employee(request.getParameter("username"),
-								 request.getParameter("password"))
+					new Employee(request.getParameter(FinalUtil.EMPLOYEE_USERNAME),
+								 request.getParameter(FinalUtil.EMPLOYEE_PASSWORD))
 				);
 		
 		
@@ -39,7 +40,7 @@ public class LoginControllerAlpha implements LoginController {
 		
 		/* If authentication failed */
 		if(loggedEmployee.getId() == 0) {
-			return new ClientMessage("AUTHENTICATION FAILED");
+			return new ClientMessage(FinalUtil.LOGIN_FAIL);
 		}
 		
 		/* Store the customer information on the session */

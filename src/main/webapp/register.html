@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+
+    <link rel="icon" href="images/expense.ico" />
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+       
+    <!-- Boostrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    
+    <!-- Boostrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="css/our.css" />
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="login.do" class="navbar-brand"><strong>Login</strong></a>
+            </div>
+        </div>
+    </nav>
+    <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>Register</h3>
+            </div>
+            <div class="form-group">
+                <input id="firstName" name="firstName" placeholder="First name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input id="lastName" name="lastName" placeholder="Last name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input id="username" name="username" placeholder="Username" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input id="password" name="password" placeholder="Password" type="password" class="form-control password-large" />
+            </div>
+            <div class="form-group">
+                <input id="repeatPassword" placeholder="Repeat password" type="password" class="form-control password-large" />
+            </div>
+            <div id="registrationMessage"></div>
+            <button id="submit" class="btn btn-md btn-primary btn-block">Submit</button>
+            <div class="panel-footer">
+            </div>
+        </div>
+    </div>
+    <script src="js/register.js"></script>
+</body>
+</html>

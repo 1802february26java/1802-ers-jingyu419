@@ -1,9 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>ERS</title>
+
+    <link rel="icon" href="images/expense.ico" />
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+       
+    <!-- Boostrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    
+    <!-- Boostrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+    <style>
+        body {
+			/* background image override */
+			background-image:  url(images/background2.jpg);
+			background-size:   cover;
+		
+		}
+    </style>
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="css/our.css" />
 </head>
-<body>
-Welcome to ERS!
+<body >
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="login.do" class="navbar-brand"><strong>Login</strong></a>
+            </div>           
+        </div>
+    </nav>
+    <div class="col-md-4 col-md-offset-4" id="mainLogin">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3>Welcome to ERS</h3>
+            </div>
+            <div class="form-group">                                                          
+                <input id="username" name="username" placeholder="Username" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <input id="password" name="password" placeholder="Password" type="password" class="form-control password-large" required/>
+            </div>
+            <div id="loginMessage"></div>
+            <button id="login" class="btn btn-md btn-primary btn-block">Login</button>
+            <div class="panel-footer">
+                <a>Forgot your password?</a>
+            </div>
+        </div>
+    </div>
+    <script src="js/login.js"></script>
 </body>
 </html>

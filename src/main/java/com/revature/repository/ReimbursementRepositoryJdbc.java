@@ -450,7 +450,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		return new HashSet<>();		
 	}
 	
-	
+	/*
 	public static void main(String[] args){
 		
 		ReimbursementRepositoryJdbc repository = new ReimbursementRepositoryJdbc();
@@ -490,5 +490,5 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		//logger.trace(repository.selectTypes());
 		
 	}
-    
+    */
 }
