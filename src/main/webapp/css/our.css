@@ -32,6 +32,9 @@ a {
     margin: 10px auto 10px auto;
     text-align: center;
 }
+.input-group{
+    text-align: center; 
+}
 
 .panel-default .panel-heading {
     text-align: center;

@@ -1,5 +1,6 @@
 window.onload = () =>{
 
+    document.getElementById("loggedUsername").innerHTML = sessionStorage.getItem("username");
     /** **/
     //Get event listener
     document.getElementById("getEmployees").addEventListener("click", getAllEmployees);
@@ -15,7 +16,7 @@ function getAllEmployees(){
           if(xhr.readyState === XMLHttpRequest.DONE && xhr.status ===200){
               //Getting JSON from response body
               let data = JSON.parse(xhr.responseText);
-              console.log(data);   
+ 
 
               //present the data to the user
               presentEmployees(data);

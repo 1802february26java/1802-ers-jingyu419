@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Employee Home Page</title>
+    <title>Submit a reimbursement</title>
 
     <link rel="icon" href="images/expense.ico" />
 
@@ -24,6 +24,7 @@
     </style>
     <!-- Our CSS -->
     <link rel="stylesheet" href="css/our.css" />
+    <link rel="stylesheet" href="css/reimbursement.css" />
 </head>
 
  <body>
@@ -52,7 +53,42 @@
             </div>
         </div>
     </nav>
-
-    <script src="js/home.js"></script>
+    <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>Create a new reimbursement</h3>
+            </div>
+            <div class="form-group">
+                <input id="amount" name="amount" placeholder="Amount in dollars" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input id="description" name="description" placeholder="Description" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input id="reimbursementTypeName" name="reimbursementTypeName" placeholder="reimbursementTypeName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input id="reimbursementTypeId" name="reimbursementTypeId" placeholder="reimbursementTypeId" class="form-control" />
+            </div>
+            <div class="form-group">
+                <div class="panel-heading">
+                    <h6>Upload Image</h6>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            Browse <input type="file" id="imgInp">
+                        </span>
+                    </span>
+                </div>
+                <img id='img-upload'/>
+            </div>
+            <div id="createReimbursementMessage"></div>
+            <button id="createReimbursementButton" class="btn btn-md btn-primary btn-block">Create reimbursement</button>
+            <div class="panel-footer">
+            </div>
+        </div>
+    </div>
+    <script src="js/reimbursement.js"></script>
 </body>
 </html>

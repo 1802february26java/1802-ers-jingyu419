@@ -70,7 +70,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		Reimbursement reimbursement = new Reimbursement(99,LocalDateTime.now(),null,
 				Double.parseDouble(request.getParameter("amount")),request.getParameter("description"),
 				loggedEmployee,manager,status,type);
-
+        logger.trace(reimbursement);
 		if (ReimbursementServiceAlpha.getInstance().submitRequest(reimbursement)) {			
 			return new ClientMessage("A REIMBURSEMENT HAS BEEN CREATED SUCCESSFULLY");
 		} else {

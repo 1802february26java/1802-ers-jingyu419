@@ -1,6 +1,6 @@
 window.onload = () =>{
     /** **/
-
+    document.getElementById("loggedUsername").innerHTML = sessionStorage.getItem("username");
     //register event listener
     document.getElementById("submit").addEventListener("click", ()=>{
         let password = document.getElementById("password").value;
@@ -14,6 +14,7 @@ window.onload = () =>{
         let firstName = document.getElementById("firstName").value;
         let lastName = document.getElementById("lastName").value;
         let username = document.getElementById("username").value;
+        console.log(username);
         let email = document.getElementById("email").value;
         //AJAX Logic
         let xhr = new XMLHttpRequest();
@@ -36,7 +37,7 @@ window.onload = () =>{
     })
 }
 
-function disableAllComponets(){
+function disableAllComponents(){
     document.getElementById("firstName").setAttribute("disabled","disabled");
     document.getElementById("lastName").setAttribute("disabled","disabled");
     document.getElementById("email").setAttribute("disabled","disabled");
@@ -49,7 +50,7 @@ function disableAllComponets(){
 function register(data) {
     
       //Confirm registratio nand redirect to login
-      disableAllComponets();
+      disableAllComponents();
   
       if(data.message === "REGISTRATION SUCCESSFUL"){
         document.getElementById("registrationMessage").innerHTML = '<span class="label label-success label-center">Registration successful.</span>';

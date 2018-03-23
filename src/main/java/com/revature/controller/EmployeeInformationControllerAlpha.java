@@ -61,7 +61,8 @@ public class EmployeeInformationControllerAlpha implements EmployeeInformationCo
 		Employee employee = new Employee(999, request.getParameter("firstName"),
 		     request.getParameter("lastName"),request.getParameter("username"),
 		     request.getParameter("password"),request.getParameter("email"),employeeRole);
-
+		
+             logger.trace(employee);;
 
 		if (EmployeeServiceAlpha.getInstance().createEmployee(employee)) {
 		    
