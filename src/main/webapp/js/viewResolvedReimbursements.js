@@ -3,12 +3,12 @@ window.onload = () =>{
     document.getElementById("loggedUsername").innerHTML = sessionStorage.getItem("username");
     /** **/
     //Get event listener
-    document.getElementById("getPendingReimbursements").addEventListener("click", getAllPendingReimbursements);
-    //Get all pending reimbursement as soon as the page loads
-    getAllPendingReimbursements();
+    document.getElementById("getResolvedReimbursements").addEventListener("click", getAllResolvedReimbursements);
+    //Get all resolved reimbursement as soon as the page loads
+    getAllResolvedReimbursements();
 }
 
-function getAllPendingReimbursements(){
+function getAllResolvedReimbursements(){
       //AJAX Logic
       let xhr = new XMLHttpRequest();
 
@@ -19,17 +19,17 @@ function getAllPendingReimbursements(){
  
 
               //present the data to the user
-              presentAllPendingReimbursements(data);
+              presentAllResolvedReimbursements(data);
           }
       };
         //Doing a HTTP to a specifc endpoint
-        xhr.open("GET",`multipleRequests.do?fetch=pending`);
+        xhr.open("GET",`multipleRequests.do?fetch=finalized`);
  
    //Sending our request
    xhr.send();
 }
 
-function presentAllPendingReimbursements(data) {
+function presentAllResolvedReimbursements(data) {
      
     //If message is a member of the JSON, something went wrong
       if(data.message){
@@ -40,7 +40,7 @@ function presentAllPendingReimbursements(data) {
           //Get reimbursement lsit node
       
 
-     let reimbursementList = document.getElementById("pendingReimbursementsList");
+     let reimbursementList = document.getElementById("resolvedReimbursementsList");
          reimbursementList.innerHTML="";
   data.forEach((reimbursement)=>{
            
@@ -52,14 +52,15 @@ function presentAllPendingReimbursements(data) {
          let td4 = document.createElement('td');
          let td5 = document.createElement('td');
          let td6 = document.createElement('td');
+         let td7 = document.createElement('td');
          
          let text1 = document.createTextNode(`${reimbursement.requested.year}-${reimbursement.requested.monthValue}-${reimbursement.requested.dayOfMonth}, ${reimbursement.requested.hour}:${reimbursement.requested.minute}:${reimbursement.requested.second}`);
-         console.log(reimbursement.requested);
-         let text2 = document.createTextNode(`${reimbursement.amount}`);
-         let text3 = document.createTextNode(`${reimbursement.description}`);
-         let text4 = document.createTextNode(`${reimbursement.approver.firstName} ${reimbursement.approver.lastName}`);
-         let text5 = document.createTextNode(`${reimbursement.type.type}`);
-         let text6 = document.createTextNode(`${reimbursement.status.status}`);
+         let text2 = document.createTextNode(`${reimbursement.resolved.year}-${reimbursement.resolved.monthValue}-${reimbursement.resolved.dayOfMonth}, ${reimbursement.resolved.hour}:${reimbursement.resolved.minute}:${reimbursement.resolved.second}`);         
+         let text3 = document.createTextNode(`${reimbursement.amount}`);
+         let text4 = document.createTextNode(`${reimbursement.description}`);
+         let text5 = document.createTextNode(`${reimbursement.approver.firstName} ${reimbursement.approver.lastName}`);
+         let text6 = document.createTextNode(`${reimbursement.type.type}`);
+         let text7 = document.createTextNode(`${reimbursement.status.status}`);
 
              td1.appendChild(text1);
              td2.appendChild(text2);
@@ -67,6 +68,7 @@ function presentAllPendingReimbursements(data) {
              td4.appendChild(text4);
              td5.appendChild(text5);
              td6.appendChild(text6);
+             td7.appendChild(text7);
 
              tr.appendChild(td1);
              tr.appendChild(td2);
@@ -74,6 +76,7 @@ function presentAllPendingReimbursements(data) {
              tr.appendChild(td4);
              tr.appendChild(td5);
              tr.appendChild(td6);
+             tr.appendChild(td7);
 
              reimbursementList.appendChild(tr);
           });

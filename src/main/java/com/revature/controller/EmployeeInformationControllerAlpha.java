@@ -125,8 +125,11 @@ public class EmployeeInformationControllerAlpha implements EmployeeInformationCo
 		}
 		
 		logger.trace("Return back the most updated employee information.");
+		if(request.getParameter("fetch") == null) {
+			return "employee-view-profile.html";
+		} else {
 		return EmployeeServiceAlpha.getInstance().getEmployeeInformation(loggedEmployee);
-		
+		}
 	}
 
 	@Override

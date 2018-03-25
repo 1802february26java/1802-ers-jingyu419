@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Employee Home Page</title>
+    <title>View profile</title>
 
     <link rel="icon" href="images/expense.ico" />
 
@@ -24,6 +24,7 @@
     </style>
     <!-- Our CSS -->
     <link rel="stylesheet" href="css/our.css" />
+
 </head>
 
  <body>
@@ -53,6 +54,33 @@
         </div>
     </nav>
 
-    <script src="js/home.js"></script>
+    <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>User profile</h3>
+                </div>        
+                <table class="table table-bordered table-hover">
+                 <thead>
+                     <tr>
+                        <th scope="col" class="col-sm-2">First Name</th>
+                        <th scope="col" class="col-sm-2">Last Name</th>
+                        <th scope="col" class="col-sm-2">Username</th>
+                        <th scope="col" class="col-sm-2">email</th>
+                        <th scope="col" class="col-sm-2">User role</th>
+
+                    </tr>
+                 </thead>
+                 <tbody id="viewProfile" >                               
+                  </tbody> 
+                </table>
+                <div id="saveMessage"></div>
+                <button id="editProfile" class="btn btn-md btn-primary">EDIT</button>
+                <button id="saveProfile" class="btn btn-md btn-primary">SAVE</button>
+                <!-- pull-right-->
+               
+            </div>
+        </div>
+
+    <script src="js/viewProfile.js"></script>
 </body>
 </html>

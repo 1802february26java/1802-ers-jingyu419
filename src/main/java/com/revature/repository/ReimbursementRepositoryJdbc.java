@@ -198,6 +198,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		    		+ " USER_T E2,USER_ROLE R2,REIMBURSEMENT_STATUS RS,REIMBURSEMENT_TYPE RT"
 		    		+ " WHERE RE.EMPLOYEE_ID = E1.U_ID AND E1.UR_ID = R1.UR_ID AND RE.MANAGER_ID = E2.U_ID"
 		    		+ " AND E2.UR_ID = R2.UR_ID AND RE.RS_ID = RS.RS_ID AND RE.RT_ID = RT.RT_ID "
+		    		+ "AND RS.RS_STATUS = 'PENDING' "
 		    		+ "AND RE.EMPLOYEE_ID = ?";
 		   
 			PreparedStatement statement = connection.prepareStatement(sql);

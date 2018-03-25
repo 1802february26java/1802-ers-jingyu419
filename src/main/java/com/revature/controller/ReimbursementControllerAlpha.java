@@ -154,7 +154,12 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 			/* Client is requesting the view. */
 		    if(request.getParameter("fetch") == null) {
 			     return "employee-pending-reimbursements-list.html";
-		    } 
+		    }
+		    else if(request.getParameter("fetch").equals("resolved")){
+		    	logger.trace("The fetch is resolved");
+		         return "employee-resolved-reimbursement-list.html";
+		    }
+		    
 		    else if(request.getParameter("fetch").equals("finalized")){
 				return ReimbursementServiceAlpha.getInstance().getUserFinalizedRequests(loggedEmployee);
 			}
@@ -172,7 +177,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		
 		else{
 			logger.trace("This is a manager, so return all reimbursement list he/she requested.");
-			if(request.getParameter("fetch").equals("finalized")){
+			if(request.getParameter("fetch").equals("resolved")){
 				return ReimbursementServiceAlpha.getInstance().getAllResolvedRequests();
 			}
 			else if (request.getParameter("fetch").equals("pending")){
