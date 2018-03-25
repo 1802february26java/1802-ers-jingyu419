@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Submit a reimbursement</title>
+    <title>View pending reimbursements</title>
 
     <link rel="icon" href="images/expense.ico" />
 
@@ -53,49 +53,34 @@
             </div>
         </div>
     </nav>
-    <div class="col-md-4 col-md-offset-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3>Create a new reimbursement</h3>
-            </div>
-         <!--   <form id="reimbursementForm" enctype="multipart/form-data" action="submitRequest.do" method="post">  -->
-            <div class="form-group">
-                <input id="amount" name="amount" placeholder="Amount in dollars" class="form-control" />
-            </div>
-            <div class="form-group">
-                <textarea class="form-control" id="description" name="description" placeholder="Description"rows="2"></textarea>
-            </div>
-            <div class="form-group">
-                 <h5>Pick reimbursement type name</h5>
-                    <select class="form-control" id="reimbursementTypeName" name="reimbursementTypeName">
-                      <option>OTHER</option>
-                      <option>COURSE</option>
-                      <option>CERTIFICATION</option>
-                      <option>TRAVELING</option>
-                    </select>
-               <!-- <input id="reimbursementTypeName" name="reimbursementTypeName" placeholder="reimbursementTypeName" class="form-control" /> -->
-            </div>
-           <!--  <div class="form-group">
-                <input id="reimbursementTypeId" name="reimbursementTypeId" placeholder="reimbursementTypeId" class="form-control" />
-            </div> -->
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <span class="btn btn-default btn-file">
-                            Upload image <input type="file" name = "photo" id="imgInp">
-                        </span>
-                    </span>
+
+    <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Pending reimbursements</h3>
+                </div>        
+                <table class="table table-bordered table-hover">
+                 <thead>
+                     <tr>
+                        <th scope="col" class="col-sm-2">Request Date</th>
+                        <th scope="col" class="col-sm-1">Amount($)</th>
+                        <th scope="col" class="col-sm-3">Description</th>
+                        <th scope="col" class="col-sm-2">Approver name</th>
+                        <th scope="col" class="col-sm-2">Request status</th>
+                        <th scope="col" class="col-sm-2">Request type</th>
+                    </tr>
+                 </thead>
+                 <tbody id="pendingReimbursementsList" >                               
+                  </tbody> 
+                </table>
+
+                <div id="listMessage"></div>
+                <button id="getPendingReimbursements" class="btn btn-md btn-primary btn-block btn-list">GET</button>
+                <div class="panel-footer">
                 </div>
             </div>
-
-            <div id="createReimbursementMessage">
-            </div>
-            <button id="createReimbursementButton" class="btn btn-md btn-primary btn-block">Create reimbursement</button>
-         <!-- </form> -->
-            <div class="panel-footer">
-            </div>
         </div>
-    </div>
-    <script src="js/reimbursement.js"></script>
+
+    <script src="js/viewPendingReimbursements.js"></script>
 </body>
 </html>

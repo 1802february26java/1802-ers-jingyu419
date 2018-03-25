@@ -212,7 +212,8 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 				set.add(new Reimbursement(
 						result.getInt("RE_R_ID"),
                         result.getTimestamp("RE_R_REQUESTED").toLocalDateTime(),   
-                        result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
+                        null,
+                       // result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
                         result.getDouble("RE_R_AMOUNT"),
                         result.getString("RE_R_DESCRIPTION"),
                         //ADDING RECEIPT HERE   
@@ -228,6 +229,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
 						));
 			}
+			logger.trace(set);
 			return set;
 		} catch (SQLException e) {
 			logger.error("Error while selecting all pending reimbursement for this particular employeeId.", e);
@@ -352,6 +354,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
 						));
 			}
+			logger.trace(set);
 			return set;
 		} catch (SQLException e) {
 			logger.error("Error while selecting all PENDING reimbursement.", e);

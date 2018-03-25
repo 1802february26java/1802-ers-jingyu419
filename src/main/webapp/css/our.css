@@ -36,7 +36,7 @@ a {
     text-align: center; 
 }
 
-.panel-default .panel-heading {
+.panel-default .panel-heading{
     text-align: center;
 }
 
@@ -54,4 +54,7 @@ ul {
     list-style: inside;
   }
 
+h5{
+    text-align: center;
+}
 

@@ -1,10 +1,14 @@
 package com.revature.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
 
@@ -14,6 +18,7 @@ import com.revature.model.EmployeeRole;
 import com.revature.model.Reimbursement;
 import com.revature.model.ReimbursementStatus;
 import com.revature.model.ReimbursementType;
+import com.revature.service.EmployeeServiceAlpha;
 import com.revature.service.ReimbursementServiceAlpha;
 
 public class ReimbursementControllerAlpha implements ReimbursementController {
@@ -59,6 +64,34 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 			
 		}
 
+		
+		
+		
+		
+		//print out request. Remove them before production.		
+		Enumeration<String> params = request.getParameterNames(); 
+		while(params.hasMoreElements()){
+		 String paramName = params.nextElement();
+		 System.out.println("Parameter Name - "+paramName+", Value - "+request.getParameter(paramName));
+		}
+		String path = request.getServletPath();
+		System.out.println("path"+path);
+//		try {
+//			Part photo =  request.getPart("file");
+//			System.out.println(photo.toString());
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ServletException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	
+		//Above code: print out request. Remove them before production.
+		
+		
+		
+		
 		/* Logic for POST */
 
 		ReimbursementStatus status = new ReimbursementStatus(1,"PENDING");
@@ -118,12 +151,18 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		
 		if(loggedEmployee.getEmployeeRole().getId()==1){
 			logger.trace("This is a regular Employee, so only return back his/her reimbursement list.");
-			if(request.getParameter("requestedType").equals("finalized")){
+			/* Client is requesting the view. */
+		    if(request.getParameter("fetch") == null) {
+			     return "employee-pending-reimbursements-list.html";
+		    } 
+		    else if(request.getParameter("fetch").equals("finalized")){
 				return ReimbursementServiceAlpha.getInstance().getUserFinalizedRequests(loggedEmployee);
 			}
-			else if (request.getParameter("requestedType").equals("pending")){
-			return ReimbursementServiceAlpha.getInstance().getUserPendingRequests(loggedEmployee);
+			else if (request.getParameter("fetch").equals("pending")){
+				logger.trace(loggedEmployee);
+			    return ReimbursementServiceAlpha.getInstance().getUserPendingRequests(loggedEmployee);  
 			}
+			
 			else{
 				Set<Reimbursement> set = new HashSet<Reimbursement>(ReimbursementServiceAlpha.getInstance().getUserPendingRequests(loggedEmployee));
 				set.addAll(ReimbursementServiceAlpha.getInstance().getUserFinalizedRequests(loggedEmployee));				
@@ -133,10 +172,10 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		
 		else{
 			logger.trace("This is a manager, so return all reimbursement list he/she requested.");
-			if(request.getParameter("requestedType").equals("finalized")){
+			if(request.getParameter("fetch").equals("finalized")){
 				return ReimbursementServiceAlpha.getInstance().getAllResolvedRequests();
 			}
-			else if (request.getParameter("requestedType").equals("pending")){
+			else if (request.getParameter("fetch").equals("pending")){
 			return ReimbursementServiceAlpha.getInstance().getAllPendingRequests();
 			}
 			else{
