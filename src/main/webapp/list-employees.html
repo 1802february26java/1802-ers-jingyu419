@@ -63,13 +63,25 @@
         </div>
     </nav>
     
-      <div class="col-md-4 col-md-offset-4">
+      <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3>Employees</h3>
             </div>
-            <ul id="employeeList" class = "list-group">                
-            </ul>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                       <th scope="col" class="col-sm-2">Employee ID</th>
+                       <th scope="col" class="col-sm-2">First Name</th>
+                       <th scope="col" class="col-sm-2">Last Name</th>
+                       <th scope="col" class="col-sm-2">Username</th>
+                       <th scope="col" class="col-sm-2">Email</th>
+                       <th scope="col" class="col-sm-2">Action</th>
+                   </tr>
+                </thead>
+                <tbody id="employeeList" >                               
+                </tbody> 
+            </table>
            
             <div id="listMessage"></div>
             <button id="getEmployees" class="btn btn-md btn-primary btn-block btn-list">GET</button>

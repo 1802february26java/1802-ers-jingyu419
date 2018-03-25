@@ -35,12 +35,22 @@
             </div>
             
             <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><strong id="strong">Employees</strong><span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="viewAllEmployee.do">View Employees</a></li>
+                        <li><a href="register.do">Register an employee</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav">
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><strong id="strong">Reimbursement</strong><span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="submitRequest.do">Submit a Reimbursement</a></li>
+                                <li><a href="finalizeRequest.do">Check reimbursement requests</a></li>
                                 <li><a href="multipleRequests.do">View all pending reimbursements</a></li>
                                 <li><a href="multipleRequests.do?fetch=resolved">View all resolved reimbursements</a></li>
+                                <li><a href="singleRequest.do">Search reimbursements</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -67,7 +77,7 @@
                         <th scope="col" class="col-sm-2">Resolved Date</th>
                         <th scope="col" class="col-sm-1">Amount($)</th>
                         <th scope="col" class="col-sm-2">Description</th>
-                        <th scope="col" class="col-sm-1">Approver name</th>
+                        <th scope="col" class="col-sm-1">Requester name</th>
                         <th scope="col" class="col-sm-1">Request status</th>
                         <th scope="col" class="col-sm-1">Request type</th>
                     </tr>
@@ -83,6 +93,6 @@
             </div>
         </div>
 
-    <script src="js/viewResolvedReimbursements.js"></script>
+    <script src="js/viewAllResolvedReimbursements.js"></script>
 </body>
 </html>

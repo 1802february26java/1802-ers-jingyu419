@@ -36,33 +36,51 @@ function presentEmployees(data) {
           document.getElementById("listMessage").innerHTML = '<span class="label label-danger label-center">Something went wrong.</span>';
       }
       else{
-          // we present all customers to the user
-          //Get customer lsit node
+
       let employeeList = document.getElementById("employeeList");
-          //Clean customer list
       employeeList.innerHTML="";
-      //Iterate over all customers
+
       data.forEach((employee)=>{
-        //creating node of <li>
-        let employeeNode = document.createElement("button");
+        
+        let tr = document.createElement('tr');  
+        let td1 = document.createElement('td'); 
+        let td2 = document.createElement('td'); 
+        let td3 = document.createElement('td'); 
+        let td4 = document.createElement('td'); 
+        let td5 = document.createElement('td'); 
+        let button = document.createElement('button'); 
+        
+        let text1 = document.createTextNode(`${employee.id}`);
+        let text2 = document.createTextNode(`${employee.firstName}`);
+        let text3 = document.createTextNode(`${employee.lastName}`);
+        let text4 = document.createTextNode(`${employee.username}`);
+        let text5 = document.createTextNode(`${employee.email}`);
+        let textButton = document.createTextNode('view Reimbursements');
+        button.className = 'btn btn-md btn-primary';
+        button.setAttribute('onclick','viewReimbursements(this)');
 
-        //Add class for styling
-        employeeNode.className = "list-group-item list-group-item-action text-center";
+        td1.appendChild(text1);
+        td2.appendChild(text2);
+        td3.appendChild(text3);
+        td4.appendChild(text4);
+        td5.appendChild(text5);
+        button.appendChild(textButton);
 
-        //creating innerHml object, adding customer name to it
-        //<li class = "something">[creating this object] </li>
-        var employeeNodeText = document.createTextNode(`${employee.firstName} ${employee.lastName}`);
-
-        //Append innerHTML to the customerNode
-        //<li class = "something">jj,jj </li>
-        employeeNode.appendChild(employeeNodeText);
-
-        //Finally, we append the new customerNode to the customerList
-        //<ul id="customerList">
-        //<li class = "something">jj,jj </li>        
-        //</ul>
-        employeeList.appendChild(employeeNode);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+        tr.appendChild(td5);
+        tr.appendChild(button);
+        employeeList.appendChild(tr);
       });
-          
+        
       }
+}
+
+function viewReimbursements(obj){
+    let rowData = obj.parentNode;
+    console.log(rowData.childNodes[0].innerHTML);
+    sessionStorage.setItem("selectedEmployeeId", rowData.childNodes[0].innerHTML);
+    window.location.replace("multipleRequests.do?fetch=viewSelected");
 }

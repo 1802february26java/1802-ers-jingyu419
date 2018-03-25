@@ -60,7 +60,7 @@ function presentAllPendingReimbursements(data) {
          console.log(reimbursement.requested);
          let text3 = document.createTextNode(`${reimbursement.amount}`);
          let text4 = document.createTextNode(`${reimbursement.description}`);
-         let text5 = document.createTextNode(`${reimbursement.approver.firstName} ${reimbursement.approver.lastName}`);
+         let text5 = document.createTextNode(`${reimbursement.requester.firstName} ${reimbursement.requester.lastName}`);
          let text6 = document.createTextNode(`${reimbursement.type.type}`);
          let text7 = document.createTextNode(`${reimbursement.status.status}`);
 

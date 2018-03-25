@@ -1,7 +1,7 @@
 package com.revature.controller;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -70,7 +70,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
         logger.trace(receiptPart.getSize());
         String imageName = Paths.get(receiptPart.getSubmittedFileName()).getFileName().toString(); 
         logger.trace("fileName"+imageName);
-        //FileInputStream receiptFile = (FileInputStream) imagePart.getInputStream();
+        InputStream receiptFile =  receiptPart.getInputStream();
 		
         
 		ReimbursementStatus status = new ReimbursementStatus(1,"PENDING");
@@ -81,7 +81,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		
 		Reimbursement reimbursement = new Reimbursement(99,LocalDateTime.now(),null,
 				Double.parseDouble(request.getParameter("amount")),request.getParameter("description"),
-				loggedEmployee,manager,status,type,receiptPart);
+				loggedEmployee,manager,status,type,receiptFile);
         logger.trace(reimbursement);
 		if (ReimbursementServiceAlpha.getInstance().submitRequest(reimbursement)) {			
 			return new ClientMessage("A REIMBURSEMENT HAS BEEN CREATED SUCCESSFULLY");
@@ -147,7 +147,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 				logger.trace(loggedEmployee);
 			    return ReimbursementServiceAlpha.getInstance().getUserPendingRequests(loggedEmployee);  
 			}
-			
+		 
 			else{
 				Set<Reimbursement> set = new HashSet<Reimbursement>(ReimbursementServiceAlpha.getInstance().getUserPendingRequests(loggedEmployee));
 				set.addAll(ReimbursementServiceAlpha.getInstance().getUserFinalizedRequests(loggedEmployee));				
@@ -156,17 +156,47 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		}
 		
 		else{
+			
 			logger.trace("This is a manager, so return all reimbursement list he/she requested.");
-			if(request.getParameter("fetch").equals("resolved")){
+			/* Client is requesting the view. */
+		    if(request.getParameter("fetch") == null) {
+			     return "manager-pending-reimbursements-list.html";
+		    }
+			
+		    else if(request.getParameter("fetch").equals("resolved")){
+		    	logger.trace("The fetch is resolved");
+		         return "manager-resolved-reimbursement-list.html";
+		    }
+		    
+			else if(request.getParameter("fetch").equals("finalized")){
 				return ReimbursementServiceAlpha.getInstance().getAllResolvedRequests();
 			}
 			else if (request.getParameter("fetch").equals("pending")){
 			return ReimbursementServiceAlpha.getInstance().getAllPendingRequests();
 			}
+		    
+		    
+		 	else if (request.getParameter("fetch").equals("viewSelected")){
+		 	logger.trace("we are are view selected reimbursements section.");
+		 	logger.trace(loggedEmployee);
+		 	return "selected-reimbursements-list.html";
+		 	}
+		    
+		 	else if (request.getParameter("fetch").equals("viewSelectedList")){
+                logger.trace("we are getting back reimburesment list for particular Id: "+request.getParameter("selectedEmployeeId"));       
+			 	Employee selectedEmployee = new Employee(Integer.parseInt(request.getParameter("selectedEmployeeId")));	
+			 	logger.trace("select employee info: "+selectedEmployee);
+				Set<Reimbursement> set = new HashSet<Reimbursement>(ReimbursementServiceAlpha.getInstance().getUserPendingRequests(selectedEmployee));
+				set.addAll(ReimbursementServiceAlpha.getInstance().getUserFinalizedRequests(selectedEmployee));				
+		 		return set;
+			 	}
+		 			
 			else{
-				Set<Reimbursement> set = new HashSet<Reimbursement>(ReimbursementServiceAlpha.getInstance().getAllPendingRequests());
-				set.addAll(ReimbursementServiceAlpha.getInstance().getAllResolvedRequests());				
-				return set;
+				logger.trace("Maybe here");
+				return "manager-pending-reimbursements-list.html";
+			//	Set<Reimbursement> set = new HashSet<Reimbursement>(ReimbursementServiceAlpha.getInstance().getAllPendingRequests());
+			//	set.addAll(ReimbursementServiceAlpha.getInstance().getAllResolvedRequests());				
+			//	return set;
 			}
 			
 			
