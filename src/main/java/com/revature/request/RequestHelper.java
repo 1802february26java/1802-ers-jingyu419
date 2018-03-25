@@ -1,5 +1,8 @@
 package com.revature.request;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.revature.controller.EmployeeInformationControllerAlpha;
@@ -41,8 +44,10 @@ public class RequestHelper {
 	 * 		  The request object which contains the solicited URI.
 	 * @return A String containing the URI where the user should be
 	 * forwarded, or data (any object) for AJAX requests.
+	 * @throws ServletException 
+	 * @throws IOException 
 	 */
-	public Object process(HttpServletRequest request) {
+	public Object process(HttpServletRequest request) throws IOException, ServletException {
 		switch(request.getRequestURI())
 		{
 		case "/ERS/login.do":

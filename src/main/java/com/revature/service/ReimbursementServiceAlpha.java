@@ -1,5 +1,6 @@
 package com.revature.service;
 
+import java.io.IOException;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -21,7 +22,7 @@ public class ReimbursementServiceAlpha implements ReimbursementService {
 		return reimbursementService;
 	}
 	@Override
-	public boolean submitRequest(Reimbursement reimbursement) {
+	public boolean submitRequest(Reimbursement reimbursement) throws IOException {
 		
 		return ReimbursementRepositoryJdbc.getInstance().insert(reimbursement);
 		

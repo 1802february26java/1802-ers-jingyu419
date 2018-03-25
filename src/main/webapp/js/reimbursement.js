@@ -63,7 +63,11 @@ window.onload = () =>{
 
         //create form
         let formdata = new FormData();
-        formdata.append('file', reimbursementImage);
+        formdata.append('amount',amount);
+        formdata.append('description',description);
+        formdata.append('reimbursementTypeName',reimbursementTypeName);
+        formdata.append('reimbursementTypeId',reimbursementTypeId);
+        formdata.append('reimbursementImage', reimbursementImage);
 
         //AJAX Logic
         let xhr = new XMLHttpRequest();
@@ -80,9 +84,11 @@ window.onload = () =>{
 
   
           //Doing a HTTP to a specifc endpoint
-          xhr.open("POST",`submitRequest.do?amount=${amount}&description=${description}&reimbursementTypeId=${reimbursementTypeId}&reimbursementTypeName=${reimbursementTypeName}&reimbursementImage=${reimbursementImage}`);
+        xhr.open("POST",`submitRequest.do?amount=${amount}&description=${description}&reimbursementTypeId=${reimbursementTypeId}&reimbursementTypeName=${reimbursementTypeName}&reimbursementImage=${reimbursementImage}`);
+       
         //Sending our request
-        xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+        //Below line causes me lots of issue.
+      //  xhr.setRequestHeader('Content-Type', 'multipart/form-data');
         xhr.send(formdata);
       //  xhr.send();
 

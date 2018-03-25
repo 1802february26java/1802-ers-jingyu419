@@ -1,8 +1,9 @@
 package com.revature.controller;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +19,6 @@ import com.revature.model.EmployeeRole;
 import com.revature.model.Reimbursement;
 import com.revature.model.ReimbursementStatus;
 import com.revature.model.ReimbursementType;
-import com.revature.service.EmployeeServiceAlpha;
 import com.revature.service.ReimbursementServiceAlpha;
 
 public class ReimbursementControllerAlpha implements ReimbursementController {
@@ -36,7 +36,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 	}
 	
 	@Override
-	public Object submitRequest(HttpServletRequest request) {
+	public Object submitRequest(HttpServletRequest request) throws IOException, ServletException {
 		
         logger.trace("This is a create reimbursement method");
 		
@@ -65,35 +65,14 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		}
 
 		
-		
-		
-		
-		//print out request. Remove them before production.		
-		Enumeration<String> params = request.getParameterNames(); 
-		while(params.hasMoreElements()){
-		 String paramName = params.nextElement();
-		 System.out.println("Parameter Name - "+paramName+", Value - "+request.getParameter(paramName));
-		}
-		String path = request.getServletPath();
-		System.out.println("path"+path);
-//		try {
-//			Part photo =  request.getPart("file");
-//			System.out.println(photo.toString());
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ServletException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	
-		//Above code: print out request. Remove them before production.
-		
-		
-		
-		
 		/* Logic for POST */
-
+		Part receiptPart = request.getPart("reimbursementImage");
+        logger.trace(receiptPart.getSize());
+        String imageName = Paths.get(receiptPart.getSubmittedFileName()).getFileName().toString(); 
+        logger.trace("fileName"+imageName);
+        //FileInputStream receiptFile = (FileInputStream) imagePart.getInputStream();
+		
+        
 		ReimbursementStatus status = new ReimbursementStatus(1,"PENDING");
 		ReimbursementType type = new ReimbursementType(Integer.parseInt(
 				request.getParameter("reimbursementTypeId")),request.getParameter("reimbursementTypeName"));
@@ -102,7 +81,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		
 		Reimbursement reimbursement = new Reimbursement(99,LocalDateTime.now(),null,
 				Double.parseDouble(request.getParameter("amount")),request.getParameter("description"),
-				loggedEmployee,manager,status,type);
+				loggedEmployee,manager,status,type,receiptPart);
         logger.trace(reimbursement);
 		if (ReimbursementServiceAlpha.getInstance().submitRequest(reimbursement)) {			
 			return new ClientMessage("A REIMBURSEMENT HAS BEEN CREATED SUCCESSFULLY");
@@ -110,6 +89,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 			return new ClientMessage("SOMETHING WENT WRONG");
 		}
 		
+			
 	}
 
 	@Override
@@ -250,5 +230,6 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		return ReimbursementServiceAlpha.getInstance().getReimbursementTypes();
 		 
 	}
+	
 
 }

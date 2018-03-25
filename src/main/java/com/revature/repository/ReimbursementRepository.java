@@ -1,5 +1,6 @@
 package com.revature.repository;
 
+import java.io.IOException;
 import java.util.Set;
 
 import com.revature.model.Reimbursement;
@@ -24,8 +25,9 @@ public interface ReimbursementRepository {
 	 * Inserts a reimbursement request in the database.
 	 * 
 	 * It returns true if the reimbursement was stored successfully.
+	 * @throws IOException 
 	 */
-	public boolean insert(Reimbursement reimbursement);
+	public boolean insert(Reimbursement reimbursement) throws IOException;
 	
 	/**
 	 * Updates a reimbursement request status in the database.

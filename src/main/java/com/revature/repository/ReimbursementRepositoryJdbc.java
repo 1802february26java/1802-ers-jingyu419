@@ -1,9 +1,6 @@
 package com.revature.repository;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +9,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
 
@@ -35,7 +34,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 	}
 	
 	@Override
-	public boolean insert(Reimbursement reimbursement) {
+	public boolean insert(Reimbursement reimbursement) throws IOException {
 		
 		logger.trace("Inserting reimbursement.");
 		
@@ -45,27 +44,18 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			
 			String sql = "INSERT INTO REIMBURSEMENT(R_ID,R_REQUESTED,R_RESOLVED,"
 					+ "R_AMOUNT,R_DESCRIPTION,R_RECEIPT,EMPLOYEE_ID,MANAGER_ID,RS_ID,RT_ID)"
-					+ " VALUES(NULL,?,NULL,?,?,NULL,?,?,?,?)";
+					+ " VALUES(NULL,?,NULL,?,?,?,?,?,?,?)";
 
 			PreparedStatement statement = connection.prepareStatement(sql);								
 								
 			statement.setTimestamp(++parameterIndex, Timestamp.valueOf(reimbursement.getRequested()));
-			//statement.setTimestamp(++parameterIndex, Timestamp.valueOf(reimbursement.getResolved()));
 			statement.setDouble(++parameterIndex, reimbursement.getAmount());
 			statement.setString(++parameterIndex, reimbursement.getDescription());
 			
-			//BLOB			
-//			File blob = new File("src/main/resources/images/test1.jpg");
-//			FileInputStream in;
-//			try {
-//				in = new FileInputStream(blob);
-//				statement.setBinaryStream(++parameterIndex, in, (int)blob.length()); 
-//			} catch (FileNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}			
-			//statement.setBlob(++parameterIndex, (java.sql.Blob)reimbursement.getReceipt());
-			statement.setInt(++parameterIndex, reimbursement.getRequester().getId());
+			//Receipt
+            statement.setBinaryStream(++parameterIndex, ((Part)reimbursement.getReceipt()).getInputStream(), (int)((Part)reimbursement.getReceipt()).getSize());
+            
+	        statement.setInt(++parameterIndex, reimbursement.getRequester().getId());
 			statement.setInt(++parameterIndex, reimbursement.getApprover().getId());
 			statement.setInt(++parameterIndex, reimbursement.getStatus().getId());
 			statement.setInt(++parameterIndex, reimbursement.getType().getId());
@@ -152,7 +142,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
                         result.getDouble("RE_R_AMOUNT"),
                         result.getString("RE_R_DESCRIPTION"),
-                        //ADDING RECEIPT HERE   
+                         
                         new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
                         		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
                         		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
@@ -162,7 +152,9 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
                         		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
                         new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
-                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE")),
+                      //ADDING RECEIPT HERE  
+                        result.getBlob("RE_R_RECEIPT")
 						);
 			}
 
@@ -216,8 +208,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         null,
                        // result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
                         result.getDouble("RE_R_AMOUNT"),
-                        result.getString("RE_R_DESCRIPTION"),
-                        //ADDING RECEIPT HERE   
+                        result.getString("RE_R_DESCRIPTION"), 
                         new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
                         		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
                         		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
@@ -227,7 +218,9 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
                         		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
                         new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
-                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE")),
+                      //ADDING RECEIPT HERE  
+                        result.getBinaryStream("RE_R_RECEIPT")
 						));
 			}
 			logger.trace(set);
@@ -283,7 +276,6 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
                         result.getDouble("RE_R_AMOUNT"),
                         result.getString("RE_R_DESCRIPTION"),
-                        //ADDING RECEIPT HERE   
                         new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
                         		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
                         		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
@@ -293,7 +285,9 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
                         		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
                         new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
-                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE")),
+                      //ADDING RECEIPT HERE  
+                        result.getBlob("RE_R_RECEIPT")
 						));
 			}
 			return set;
@@ -342,7 +336,6 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
                         result.getDouble("RE_R_AMOUNT"),
                         result.getString("RE_R_DESCRIPTION"),
-                        //ADDING RECEIPT HERE   
                         new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
                         		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
                         		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
@@ -352,7 +345,9 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
                         		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
                         new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
-                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE")),
+                      //ADDING RECEIPT HERE  
+                        result.getBlob("RE_R_RECEIPT")
 						));
 			}
 			logger.trace(set);
@@ -401,8 +396,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         result.getTimestamp("RE_R_REQUESTED").toLocalDateTime(),   
                         result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
                         result.getDouble("RE_R_AMOUNT"),
-                        result.getString("RE_R_DESCRIPTION"),
-                        //ADDING RECEIPT HERE   
+                        result.getString("RE_R_DESCRIPTION"),  
                         new Employee(result.getInt("E1_U_ID"),result.getString("E1_U_FIRSTNAME"),
                         		result.getString("E1_U_LASTNAME"), result.getString("E1_U_USERNAME"),
                         		result.getString("E1_U_PASSWORD"),result.getString("E1_U_EMAIL"),
@@ -412,7 +406,9 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         		result.getString("E2_U_PASSWORD"),result.getString("E2_U_EMAIL"),
                         		new EmployeeRole(result.getInt("E2_UR_ID"),result.getString("R2_UR_TYPE"))),
                         new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
-                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE"))
+                        new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE")),
+                      //ADDING RECEIPT HERE  
+                        result.getBlob("RE_R_RECEIPT")
 						));
 			}
 			return set;
@@ -454,8 +450,8 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		return new HashSet<>();		
 	}
 	
-	/*
-	public static void main(String[] args){
+
+	public static void main(String[] args) throws IOException{
 		
 		ReimbursementRepositoryJdbc repository = new ReimbursementRepositoryJdbc();
 
@@ -481,18 +477,18 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 //			e.printStackTrace();
 //		}		
 		
-		Reimbursement reimbursement = new Reimbursement(21,LocalDateTime.now(),null,
-				     1000D,"Saturday",employee,manager,status,type); 
+	//	Reimbursement reimbursement = new Reimbursement(21,LocalDateTime.now(),null,
+	//			     1000D,"Saturday",employee,manager,status,type); 
 		
-		logger.trace("Inserting a new Reimbursement: "+repository.insert(reimbursement));
+	//	logger.trace("Inserting a new Reimbursement: "+repository.insert(reimbursement));
 		//logger.trace(repository.update(reimbursement));
 		//logger.trace(repository.select(21));
-		 //logger.trace(repository.selectPending(1));
+		logger.trace(repository.selectPending(90));
 		 //logger.trace(repository.selectAllPending());
 		 // logger.trace(repository.selectAllFinalized());
 		//logger.trace(repository.selectFinalized(1));
 		//logger.trace(repository.selectTypes());
 		
 	}
-    */
+    
 }
