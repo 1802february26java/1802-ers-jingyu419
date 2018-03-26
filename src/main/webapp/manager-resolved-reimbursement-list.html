@@ -28,41 +28,39 @@
 </head>
 
  <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a href="home.do" class="navbar-brand"><strong>Hello, </strong><strong id="loggedUsername">Home</strong></a>
-            </div>
-            
-            <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><strong id="strong">Employees</strong><span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="viewAllEmployee.do">View Employees</a></li>
-                        <li><a href="register.do">Register an employee</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav">
+        <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a href="home.do" class="navbar-brand"><strong>Hello, </strong><strong id="loggedUsername">Home</strong></a>
+                    </div>
+                    
+                    <ul class="nav navbar-nav">
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><strong id="strong">Reimbursement</strong><span class="caret"></span></a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><strong id="strong">Employees</strong><span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="finalizeRequest.do">Check reimbursement requests</a></li>
-                                <li><a href="multipleRequests.do">View all pending reimbursements</a></li>
-                                <li><a href="multipleRequests.do?fetch=resolved">View all resolved reimbursements</a></li>
-                                <li><a href="singleRequest.do">Search reimbursements</a></li>
+                                <li><a href="viewAllEmployee.do">View Employees</a></li>
+                                <li><a href="register.do">Register an employee</a></li>
                             </ul>
                         </li>
                     </ul>
-            
-            <div class="nav navbar-nav navbar-right">
-                <a href="logout.do" class="navbar-brand"><strong><small>Logout</small></strong></a>
-            </div>
-            <div class="nav navbar-nav navbar-right">
-                <a href="viewInformation.do" class="navbar-brand"><strong><small>Profile</small></strong></a>
-            </div>
-        </div>
-    </nav>
+                    <ul class="nav navbar-nav">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><strong id="strong">Reimbursement</strong><span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="multipleRequests.do">View all pending reimbursements</a></li>
+                                        <li><a href="multipleRequests.do?fetch=resolved">View all resolved reimbursements</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                    
+                    <div class="nav navbar-nav navbar-right">
+                        <a href="logout.do" class="navbar-brand"><strong><small>Logout</small></strong></a>
+                    </div>
+                    <div class="nav navbar-nav navbar-right">
+                        <a href="viewInformation.do" class="navbar-brand"><strong><small>Profile</small></strong></a>
+                    </div>
+                </div>
+            </nav>
 
     <div class="col-md-12">
             <div class="panel panel-default">

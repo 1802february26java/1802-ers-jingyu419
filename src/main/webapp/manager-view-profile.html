@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>View pending reimbursements</title>
+    <title>View profile</title>
 
     <link rel="icon" href="images/expense.ico" />
 
@@ -61,35 +61,34 @@
                     </div>
                 </div>
             </nav>
-    <div class="col-md-12">
+
+    <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3>Pending reimbursements</h3>
+                    <h3>User profile</h3>
                 </div>        
                 <table class="table table-bordered table-hover">
                  <thead>
                      <tr>
-                        <th scope="col" class="col-sm-1">Reimbursement ID</th> 
-                        <th scope="col" class="col-sm-2">Request Date</th>
-                        <th scope="col" class="col-sm-1">Amount($)</th>
-                        <th scope="col" class="col-sm-3">Description</th>
-                        <th scope="col" class="col-sm-2">Requester name</th>
-                        <th scope="col" class="col-sm-2">Request status</th>
-                        <th scope="col" class="col-sm-2">Request type</th>
-                        <th scope="col" class="col-sm-2">Action</th>
+                        <th scope="col" class="col-sm-2">First Name</th>
+                        <th scope="col" class="col-sm-2">Last Name</th>
+                        <th scope="col" class="col-sm-2">Username</th>
+                        <th scope="col" class="col-sm-2">email</th>
+                        <th scope="col" class="col-sm-2">User role</th>
+
                     </tr>
                  </thead>
-                 <tbody id="pendingReimbursementsList" >                               
+                 <tbody id="viewProfile" >                               
                   </tbody> 
                 </table>
-
-                <div id="listMessage"></div>
-                <button id="getPendingReimbursements" class="btn btn-md btn-primary btn-block btn-list">GET</button>
-                <div class="panel-footer">
-                </div>
+                <div id="saveMessage"></div>
+                <button id="editProfile" class="btn btn-md btn-primary">EDIT</button>
+                <button id="saveProfile" class="btn btn-md btn-primary">SAVE</button>
+                <!-- pull-right-->
+               
             </div>
         </div>
-          
-    <script src="js/viewAllPendingReimbursements.js"></script>
+
+    <script src="js/viewProfile.js"></script>
 </body>
 </html>
