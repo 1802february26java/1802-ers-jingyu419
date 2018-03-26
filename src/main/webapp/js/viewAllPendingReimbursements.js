@@ -123,9 +123,31 @@ function presentAllPendingReimbursements(data) {
 
 
 function finalizedReimbursement(obj){
-   console.log(document.getElementById('selectedStatus').value);
-   /*
-   let newReimbursementStatus = document.getElementById('selectedStatus').value;
+    
+  // let rowIndex = obj.parentNode.parentNode.rowIndex;
+   let rowData = obj.parentNode.parentNode;
+
+   //console.log(rowIndex);
+   //console.log(rowData);
+   //console.log(rowData.childNodes[6]);
+   let statusCode =rowData.childNodes[6].childNodes[0].value ;
+   let reimbursementId = rowData.childNodes[0].innerHTML;
+   //console.log(statusCode);
+   //console.log(rowData.childNodes[0].innerHTML);
+
+   let statusID;
+   if(statusCode === 'APPROVED'){
+    statusID = 3;
+   }
+   else if(statusCode === 'DECLINED'){
+    statusID = 2;
+   }
+   else{
+    statusID = 1;
+   }
+   console.log(statusID);
+
+
    //AJAX Logic
    let xhr = new XMLHttpRequest();
 
@@ -139,7 +161,7 @@ function finalizedReimbursement(obj){
        }
    };
      //Doing a HTTP to a specifc endpoint
-     xhr.open("POST",`finalizeRequest.do?firstName=${firstName}`);
+     xhr.open("POST",`finalizeRequest.do?reimbursementId=${reimbursementId}&status=${statusCode}&statusId=${statusID}`);
 //Sending our request
 xhr.send();
 
@@ -147,15 +169,15 @@ xhr.send();
 
 function updateReimbursement(data) {
 
-    if(data.message === "REGISTRATION SUCCESSFUL"){
-      document.getElementById("registrationMessage").innerHTML = '<span class="label label-success label-center">Update successful.</span>';
+    if(data.message === "A REIMBURSEMENT HAS BEEN UPDATED SUCCESSFULLY"){
+      document.getElementById("listMessage").innerHTML = '<span class="label label-success label-center">Update successful.</span>';
       
-      setTimeout(() =>{ window.location.replace("multipleRequests.do?fetch=pending");}, 3000);
-     
+      setTimeout(() =>{ window.location.replace("home.do");}, 3000);
+ 
     }
     else{
-      document.getElementById("registrationMessage").innerHTML = '<span class="label label-danger label-center">Something went wrong.</span>';
+      document.getElementById("listMessage").innerHTML = '<span class="label label-danger label-center">Something went wrong.</span>';
          
     }
-    */
+ 
 }

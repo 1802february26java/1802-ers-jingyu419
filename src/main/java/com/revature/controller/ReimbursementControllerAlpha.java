@@ -232,6 +232,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		logger.trace("We are getting a single reimbursement back");
 		Reimbursement reimbursementToUpdate = ReimbursementServiceAlpha.getInstance().getSingleRequest(reimbursement);
 		reimbursementToUpdate.setStatus(status);
+		reimbursementToUpdate.setResolved(LocalDateTime.now());
 		
 		
 		if (ReimbursementServiceAlpha.getInstance().finalizeRequest(reimbursementToUpdate)) {			
