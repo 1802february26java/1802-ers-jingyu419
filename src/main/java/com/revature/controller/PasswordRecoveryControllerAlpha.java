@@ -34,11 +34,12 @@ public class PasswordRecoveryControllerAlpha implements PasswordRecoveryControll
 		
 		String token = request.getParameter("token");
 		String password = request.getParameter("password");
+		int userId = Integer.parseInt(request.getParameter("id"));
 		logger.trace("We are in password reset controller. Here is the token: "+token);
-		logger.trace(token+" "+password);
+		logger.trace(token+" "+password+" "+userId);
 		
 		EmployeeToken employeeToken = new EmployeeToken(token);
-		employeeToken.setRequester(new Employee(0));
+		employeeToken.setRequester(new Employee(userId));
 		if(EmployeeServiceAlpha.getInstance().isTokenExpired(employeeToken)){
 			logger.trace("We are in password reset controller. The token is expired");
 			return new ClientMessage("EXPIRED TOKEN");
@@ -46,8 +47,22 @@ public class PasswordRecoveryControllerAlpha implements PasswordRecoveryControll
 		}
 		else{
 			logger.trace("We are in password reset controller. The token is valid");
+			//1. update the password in the database
+			Employee tempEmployee = new Employee(userId);
+			Employee employeeToUpdate = EmployeeServiceAlpha.getInstance().getEmployeeInformation(tempEmployee);
+			employeeToUpdate.setPassword(password);			
+			boolean booleanUpdatePassword = EmployeeServiceAlpha.getInstance().updatePassword(employeeToUpdate);
+			if(booleanUpdatePassword){
+				//delete the token
+				EmployeeServiceAlpha.getInstance().deletePasswordToken(employeeToken);
+				return new ClientMessage("VALID TOKEN");
+			}
+			else{
+				return new ClientMessage("SOMETHING WENT WRONG");
+			}
 			
-			return new ClientMessage("VALID TOKEN");
+			
+			
 		}
 			
 	}

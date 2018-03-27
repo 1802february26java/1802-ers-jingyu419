@@ -3,8 +3,9 @@ window.onload = () =>{
     
     //Login event listener
     document.getElementById("reset").addEventListener("click", ()=>{
-        
+       let userId = getParameter("id"); 
        let token =getParameter("token");
+       console.log(userId);
        console.log(token);
         let password = document.getElementById("password").value;
         let repeatPassword = document.getElementById("repeatPassword").value;
@@ -23,7 +24,7 @@ window.onload = () =>{
             }
         };
           //Doing a HTTP to a specifc endpoint
-          xhr.open("POST",`resetPasswordRequest.do?password=${password}&token=${token}`);
+          xhr.open("POST",`resetPasswordRequest.do?id=${userId}&password=${password}&token=${token}`);
    
      //Sending our request
      xhr.send();
@@ -39,6 +40,11 @@ function updatePassword(data) {
         document.getElementById("resetMessage").innerHTML = '<span class="label label-success label-center">Password has been updated successfully.</span>';
         setTimeout(() =>{ window.location.replace("login.do");}, 3000);
          }
+    
+    else if(data.message ==="SOMETHING WENT WRONG"){
+        document.getElementById("resetMessage").innerHTML = '<span class="label label-danger label-center">EXPIRED TOKEN.</span>';
+     setTimeout(() =>{ window.location.replace("login.do");}, 1000);
+    }
     else{
 
      document.getElementById("resetMessage").innerHTML = '<span class="label label-danger label-center">EXPIRED TOKEN.</span>';

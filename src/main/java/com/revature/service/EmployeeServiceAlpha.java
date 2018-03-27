@@ -150,6 +150,7 @@ public class EmployeeServiceAlpha implements EmployeeService {
 			return true;
 		}
 		else{
+			
 			return false;
 		}
 		
@@ -160,7 +161,7 @@ public class EmployeeServiceAlpha implements EmployeeService {
 		
 		  String subject = "Reset your password";
 		   String body = "Please use below link to reset your password.\n"
-		                 +"http://localhost:8085/ERS/resetPasswordRequest.do?token="+createdToken.getToken()+"\n";
+		                 +"http://localhost:8085/ERS/resetPasswordRequest.do?id="+employee.getId()+"&token="+createdToken.getToken()+"\n";
 		   
 		   String email = employee.getEmail();
 		   
