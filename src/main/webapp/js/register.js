@@ -14,8 +14,32 @@ window.onload = () =>{
         let firstName = document.getElementById("firstName").value;
         let lastName = document.getElementById("lastName").value;
         let username = document.getElementById("username").value;
-        console.log(username);
         let email = document.getElementById("email").value;
+
+        console.log(username);
+        let checkExistedUserXhr = new XMLHttpRequest();
+        checkExistedUserXhr.onreadystatechange = () => {
+            if(checkExistedUserXhr.readyState === XMLHttpRequest.DONE && checkExistedUserXhr.status ===200){
+                let checkExistedUserData = JSON.parse(checkExistedUserXhr.responseText);   
+
+                checkUser(checkExistedUserData);
+            }
+        };
+          //Doing a HTTP to a specifc endpoint
+          checkExistedUserXhr.open("POST",`isUserExisted.do?username=${username}`);
+     //Sending our request
+     checkExistedUserXhr.send();
+
+    })
+}
+
+function registerXhr(){
+        
+    let password = document.getElementById("password").value;
+    let firstName = document.getElementById("firstName").value;
+    let lastName = document.getElementById("lastName").value;
+    let username = document.getElementById("username").value;
+    let email = document.getElementById("email").value;
         //AJAX Logic
         let xhr = new XMLHttpRequest();
 
@@ -24,28 +48,38 @@ window.onload = () =>{
                 //Getting JSON from response body
                 let data = JSON.parse(xhr.responseText);
                 console.log(data);   
-
                 //Cal login response processing
                 register(data);
             }
         };
           //Doing a HTTP to a specifc endpoint
+          console.log(`${firstName}&lastName=${lastName}&username=${username}&password=${password}&email=${email}`);
+          
           xhr.open("POST",`register.do?firstName=${firstName}&lastName=${lastName}&username=${username}&password=${password}&email=${email}`);
      //Sending our request
      xhr.send();
-
-    })
 }
 
 function disableAllComponents(){
-    document.getElementById("firstName").setAttribute("disabled","disabled");
-    document.getElementById("lastName").setAttribute("disabled","disabled");
-    document.getElementById("email").setAttribute("disabled","disabled");
-    document.getElementById("username").setAttribute("disabled","disabled");
-    document.getElementById("password").setAttribute("disabled","disabled");
-    document.getElementById("repeatPassword").setAttribute("disabled","disabled");
-    document.getElementById("submit").setAttribute("disabled","disabled");
+    document.getElementById("firstName").disableAllComponents = true;
+    document.getElementById("lastName").disableAllComponents = true;
+    document.getElementById("email").disableAllComponents = true;
+    document.getElementById("username").disableAllComponents = true;
+    document.getElementById("password").disableAllComponents = true;
+    document.getElementById("repeatPassword").disableAllComponents = true;
+    document.getElementById("submit").disableAllComponents = true;
 }
+
+function enableAllComponents(){
+    document.getElementById("firstName").disableAllComponents = false;
+    document.getElementById("lastName").disableAllComponents = false;
+    document.getElementById("email").disableAllComponents = false;
+    document.getElementById("username").disableAllComponents = false;
+    document.getElementById("password").disableAllComponents = false;
+    document.getElementById("repeatPassword").disableAllComponents = false;
+    document.getElementById("submit").disableAllComponents = false;
+}
+
 
 function register(data) {
     
@@ -60,6 +94,18 @@ function register(data) {
       }
       else{
         document.getElementById("registrationMessage").innerHTML = '<span class="label label-danger label-center">Something went wrong.</span>';
-           
+         enableAllComponents();
+         setTimeout(() =>{ document.getElementById("registrationMessage").innerHTML = '';}, 3000);
       }
+}
+
+function checkUser(checkExistedUserData){
+
+    if(checkExistedUserData.message === "This username has not been taken."){
+        registerXhr();
+      }
+      else{
+        document.getElementById("registrationMessage").innerHTML = '<span class="label label-danger label-center">The username has been taken.</span>';
+         setTimeout(() =>{ document.getElementById("registrationMessage").innerHTML = '';}, 3000);
+      }  
 }

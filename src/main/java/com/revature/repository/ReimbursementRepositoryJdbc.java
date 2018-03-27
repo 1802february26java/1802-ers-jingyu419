@@ -2,16 +2,16 @@ package com.revature.repository;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.revature.model.Employee;
@@ -38,6 +38,11 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		
 		logger.trace("Inserting reimbursement.");
 		
+        //Check if the data is still good here before we save to database.
+        //byte[] bytes = IOUtils.toByteArray(reimbursement.getReceipt());
+        //String encoded = Base64.getEncoder().encodeToString(bytes);
+        //logger.trace("We are in repository insert class. Base64: "+encoded);
+        
 		try(Connection connection = ConnectionUtil.getConnection()) {
 			
 			int parameterIndex = 0;
@@ -53,7 +58,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			statement.setString(++parameterIndex, reimbursement.getDescription());
 			
 			//Receipt
-            statement.setBinaryStream(++parameterIndex, (InputStream)reimbursement.getReceipt());
+            statement.setBinaryStream(++parameterIndex, reimbursement.getReceipt());
             
 	        statement.setInt(++parameterIndex, reimbursement.getRequester().getId());
 			statement.setInt(++parameterIndex, reimbursement.getApprover().getId());
@@ -450,7 +455,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		return new HashSet<>();		
 	}
 	
-/**
+
 	public static void main(String[] args) throws IOException{
 		
 		ReimbursementRepositoryJdbc repository = new ReimbursementRepositoryJdbc();
@@ -482,11 +487,13 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		
 	//	logger.trace("Inserting a new Reimbursement: "+repository.insert(reimbursement));
 		//logger.trace(repository.update(reimbursement));
-		//logger.trace(repository.select(21));
-		Reimbursement testReimbursement = repository.select(130);
-		
-		Blob blob = (Blob)testReimbursement.getReceipt();
-           logger.trace(blob.toString());
+		logger.trace(repository.select(172));
+		Reimbursement reimbursement = repository.select(172);
+		InputStream receiptFile = (InputStream)reimbursement.getReceipt();
+		logger.trace(receiptFile.available());
+		//byte[] bytes = IOUtils.toByteArray(receiptFile);
+        //String encoded = Base64.getEncoder().encodeToString(bytes);
+       // logger.trace("Base64: "+encoded);
 //        byte byteArray[];
 //		try {
 //			byteArray = blob.getBytes(1, (int)blob.length());
@@ -504,5 +511,5 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		//logger.trace(repository.selectTypes());
 		
 	}
-    */
+   
 }

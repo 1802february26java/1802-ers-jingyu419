@@ -1,8 +1,11 @@
 package com.revature.service;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.revature.model.Employee;
@@ -24,6 +27,9 @@ public class ReimbursementServiceAlpha implements ReimbursementService {
 	@Override
 	public boolean submitRequest(Reimbursement reimbursement) throws IOException {
 		
+		// byte[] bytes = IOUtils.toByteArray(reimbursement.getReceipt());
+	      //  String encoded = Base64.getEncoder().encodeToString(bytes);
+	       // logger.trace("We are in service level.Base64: "+encoded);
 		return ReimbursementRepositoryJdbc.getInstance().insert(reimbursement);
 		
 	}

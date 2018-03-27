@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.revature.ajax.ClientMessage;
@@ -20,6 +22,7 @@ import com.revature.model.Reimbursement;
 import com.revature.model.ReimbursementStatus;
 import com.revature.model.ReimbursementType;
 import com.revature.service.ReimbursementServiceAlpha;
+import com.revature.thread.EmailThread;
 
 public class ReimbursementControllerAlpha implements ReimbursementController {
 
@@ -71,7 +74,13 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
         String imageName = Paths.get(receiptPart.getSubmittedFileName()).getFileName().toString(); 
         logger.trace("fileName"+imageName);
         InputStream receiptFile =  receiptPart.getInputStream();
-		
+        
+        /*
+         * to check if I can base64 for the image
+        byte[] bytes = IOUtils.toByteArray(receiptFile);
+        String encoded = Base64.getEncoder().encodeToString(bytes);
+        logger.trace("Base64: "+encoded);
+        */
         
 		ReimbursementStatus status = new ReimbursementStatus(1,"PENDING");
 		ReimbursementType type = new ReimbursementType(Integer.parseInt(
@@ -82,7 +91,12 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		Reimbursement reimbursement = new Reimbursement(99,LocalDateTime.now(),null,
 				Double.parseDouble(request.getParameter("amount")),request.getParameter("description"),
 				loggedEmployee,manager,status,type,receiptFile);
-        logger.trace(reimbursement);
+        logger.trace("current reimbursement data: "+reimbursement);
+        //Check if data is still good. Result: Data is still good in this step
+       // byte[] bytes = IOUtils.toByteArray((InputStream)reimbursement.getReceipt());
+        //String encoded = Base64.getEncoder().encodeToString(bytes);
+        //logger.trace("Base64: "+encoded);
+                
 		if (ReimbursementServiceAlpha.getInstance().submitRequest(reimbursement)) {			
 			return new ClientMessage("A REIMBURSEMENT HAS BEEN CREATED SUCCESSFULLY");
 		} else {
@@ -235,7 +249,10 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		reimbursementToUpdate.setResolved(LocalDateTime.now());
 		
 		
-		if (ReimbursementServiceAlpha.getInstance().finalizeRequest(reimbursementToUpdate)) {			
+		if (ReimbursementServiceAlpha.getInstance().finalizeRequest(reimbursementToUpdate)) {	
+			
+			sendEmailToEmployee(reimbursementToUpdate);
+			
 			return new ClientMessage("A REIMBURSEMENT HAS BEEN UPDATED SUCCESSFULLY");
 		} else {
 			return new ClientMessage("SOMETHING WENT WRONG");
@@ -260,6 +277,27 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 		logger.trace("return back all reimbursement types now.");
 		return ReimbursementServiceAlpha.getInstance().getReimbursementTypes();
 		 
+	}
+	
+	private void sendEmailToEmployee(Reimbursement reimbursement){
+		
+		   String subject = "One of your reimbursement is finalized";
+		   String body = "Here is your new your reimbursement status.\n"
+		                 +"Reimbursement Id: "+reimbursement.getId()+"\n"
+		                 +"Request Date: "+reimbursement.getRequested()+"\n"
+		                 +"Resolved Date: "+reimbursement.getResolved()+"\n"
+		                 +"Amount($): "+reimbursement.getAmount()+"\n"
+		                 +"Description: "+reimbursement.getDescription()+"\n"
+		                 +"Request status: "+reimbursement.getStatus().getStatus()+"\n"
+		                 +"Request type: "+reimbursement.getType().getType()+"\n";
+		   
+		   String email = reimbursement.getRequester().getEmail();
+		   
+		      EmailThread runnableThread = new EmailThread(subject,body,email);
+		        
+		        Thread t = new Thread(runnableThread);
+		        
+		        t.start(); 
 	}
 	
 

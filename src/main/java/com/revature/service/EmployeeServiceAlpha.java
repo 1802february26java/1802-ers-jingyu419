@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.revature.model.Employee;
 import com.revature.model.EmployeeToken;
 import com.revature.repository.EmployeeRepositoryJdbc;
+import com.revature.thread.EmailThread;
 
 
 public class EmployeeServiceAlpha implements EmployeeService {
@@ -41,7 +42,12 @@ public class EmployeeServiceAlpha implements EmployeeService {
 	@Override
 	public Employee getEmployeeInformation(Employee employee) {
 		
+		if (employee.getId()>0){
 		return EmployeeRepositoryJdbc.getInstance().select(employee.getId());
+		}
+		else{
+	    return EmployeeRepositoryJdbc.getInstance().select(employee.getUsername());
+		}
 		
 	}
 
@@ -85,12 +91,19 @@ public class EmployeeServiceAlpha implements EmployeeService {
 		
 	Employee existedEmployee = EmployeeRepositoryJdbc.getInstance().select(employee.getUsername());
 		
-		if(existedEmployee.getUsername().equals(employee.getUsername())){
-			return false;
-		}
-		else{
+	    if(existedEmployee.getUsername() == null){
+	    	logger.trace("we did not find this username in database");
+	    	return false;
+	    	
+	    }
+		//if(existedEmployee.getUsername().equals(employee.getUsername()))
+	    else{
+			logger.trace("We are in service layer. THis username has been taken.");
 			return true;
 		}
+		//else{
+	//		return false;
+	//	}
 		
 	}
 
@@ -98,8 +111,23 @@ public class EmployeeServiceAlpha implements EmployeeService {
 	@Override
 	public boolean createPasswordToken(Employee employee) {
 		
-		return EmployeeRepositoryJdbc.getInstance().insertEmployeeToken(new EmployeeToken(LocalDateTime.now(),employee));
+		EmployeeToken token = new EmployeeToken(LocalDateTime.now(),employee);
+		logger.trace(token);
+		 if(EmployeeRepositoryJdbc.getInstance().insertEmployeeToken(token)){
+			 
+			EmployeeToken createdToken = EmployeeRepositoryJdbc.getInstance().selectEmployeeToken(token);
+			
+			logger.trace("We are in service. CreatedToken:"+createdToken);
+			
+			sendEmailToEmployee(employee,createdToken);
+			
+			 return true; 
+		 }
 		
+		 else{
+			 return false;
+		 }
+		 
 	}
 
 	
@@ -116,12 +144,31 @@ public class EmployeeServiceAlpha implements EmployeeService {
 		
 		EmployeeToken token =  EmployeeRepositoryJdbc.getInstance().selectEmployeeToken(employeeToken);
 		
+		logger.trace(token);
+		
 		if(token.getId() == 0){
-			return false;
-		}
-		else{
 			return true;
 		}
+		else{
+			return false;
+		}
+		
+	}
+	
+	
+	private void sendEmailToEmployee(Employee employee,EmployeeToken createdToken){
+		
+		  String subject = "Reset your password";
+		   String body = "Please use below link to reset your password.\n"
+		                 +"http://localhost:8085/ERS/resetPasswordRequest.do?token="+createdToken.getToken()+"\n";
+		   
+		   String email = employee.getEmail();
+		   
+		      EmailThread runnableThread = new EmailThread(subject,body,email);
+		        
+		        Thread t = new Thread(runnableThread);
+		        
+		        t.start(); 
 		
 	}
 

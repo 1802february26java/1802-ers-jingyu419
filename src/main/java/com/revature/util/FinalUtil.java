@@ -10,6 +10,6 @@ public final class FinalUtil {
     public static final String CLIENT_MESSGE_REGISTRATION_SUCCESSFUL = "REGISTRATION SUCCESSFUL";
     
 	public static final String CLIENT_MESSAGE_SOMETHING_WRONG = "SOMETHING WENT WRONG";
-
+	public static final String CLIENT_MESSAGE_RESET_EMAIL_SENT = "RESET EMAIL SENT";
 
 }

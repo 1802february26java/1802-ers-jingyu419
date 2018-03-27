@@ -41,6 +41,11 @@ window.onload = () =>{
     //register event listener
     document.getElementById("createReimbursementButton").addEventListener("click", ()=>{
         let amount = document.getElementById("amount").value;
+        if(amount <0){
+            document.getElementById("createReimbursementMessage").innerHTML = '<span class="label label-danger label-center">NO NEGATIVE AMOUNT.</span>';
+            setTimeout(() =>{ document.getElementById("createReimbursementMessage").innerHTML = '';}, 3000);
+            return;
+        }
         let description = document.getElementById("description").value;
        // let reimbursementTypeId = document.getElementById("reimbursementTypeId").value;
         let reimbursementTypeName = document.getElementById("reimbursementTypeName").value;
@@ -106,7 +111,7 @@ function createReimbursement(data) {
      disableAllComponents();
   
       if(data.message === "A REIMBURSEMENT HAS BEEN CREATED SUCCESSFULLY"){
-        document.getElementById("createReimbursementMessage").innerHTML = '<span class="label label-success label-center">A REIMBURSEMENT HAS BEEN CREATED SUCCESSFULLY.</span>';
+        document.getElementById("createReimbursementMessage").innerHTML = '<span class="label label-success label-center">CREATED SUCCESSFULLY.</span>';
         
       setTimeout(() =>{ window.location.replace("home.do");}, 3000);
        

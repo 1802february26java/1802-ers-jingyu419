@@ -9,6 +9,7 @@ import com.revature.controller.EmployeeInformationControllerAlpha;
 import com.revature.controller.ErrorControllerAlpha;
 import com.revature.controller.HomeControllerAlpha;
 import com.revature.controller.LoginControllerAlpha;
+import com.revature.controller.PasswordRecoveryControllerAlpha;
 import com.revature.controller.ReimbursementControllerAlpha;
 
 /**
@@ -88,7 +89,11 @@ public class RequestHelper {
 			
 		case "/ERS/getRequestTypes.do":
 			return ReimbursementControllerAlpha.getInstance().getRequestTypes(request);
-			
+		case "/ERS/sendResetEmail.do":
+			return PasswordRecoveryControllerAlpha.getInstance().resetPassword(request);				
+		case "/ERS/resetPasswordRequest.do":
+			return PasswordRecoveryControllerAlpha.getInstance().recoverPassword(request);				
+				
 		default:
 			return new ErrorControllerAlpha().showError(request);
 		}

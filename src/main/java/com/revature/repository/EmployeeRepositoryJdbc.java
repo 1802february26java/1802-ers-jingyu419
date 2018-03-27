@@ -152,6 +152,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 		} catch (SQLException e) {
 			logger.error("Error while selecting employee by employee username.", e);
 		}
+		    logger.trace("We are in repoistory level. An empty employee object is sent back.");
 		return new Employee();
 	}
 
@@ -282,10 +283,13 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 		
 		int parameterIndex = 0;
 		
+		if(employeeToken.getRequester().getId()>0){
+		
 		String sql = "SELECT * FROM PASSWORD_RECOVERY WHERE U_ID = ?";	
 		
 		PreparedStatement statement = connection.prepareStatement(sql);
 		
+		logger.trace("we are repository level. The requester Id is: "+employeeToken.getRequester().getId());
 		statement.setInt(++parameterIndex, employeeToken.getRequester().getId());
 		
 		ResultSet result = statement.executeQuery();
@@ -297,6 +301,31 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 					result.getTimestamp("PR_TIME").toLocalDateTime(),
 					EmployeeRepositoryJdbc.getInstance().select(result.getInt("U_ID"))
 					);
+		}
+		
+		}
+		
+		else{
+			
+			String sql = "SELECT * FROM PASSWORD_RECOVERY WHERE PR_TOKEN = ?";	
+			
+			PreparedStatement statement = connection.prepareStatement(sql);
+			
+			logger.trace("we are repository level. The requester TOKEN is: "+employeeToken.getToken());
+			statement.setString(++parameterIndex, employeeToken.getToken());
+			
+			ResultSet result = statement.executeQuery();
+		
+			if(result.next()) {
+				return new EmployeeToken(
+						result.getInt("PR_ID"),
+						result.getString("PR_TOKEN"),
+						result.getTimestamp("PR_TIME").toLocalDateTime(),
+						EmployeeRepositoryJdbc.getInstance().select(result.getInt("U_ID"))
+						);
+			}
+			
+			
 		}
 	} catch (SQLException e) {
 		logger.error("Error while selecting employee token.", e);

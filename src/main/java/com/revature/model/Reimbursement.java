@@ -48,7 +48,7 @@ public class Reimbursement implements Serializable, Comparable<Reimbursement> {
 	 * Feel free to change the data type (on the Java side) at your own will.
 	 * In the end this will be transformed into a byte stream.
 	 */
-	private Object receipt;
+	private InputStream receipt;
 	
 	/**
 	 * NOT NULL
@@ -81,7 +81,7 @@ public class Reimbursement implements Serializable, Comparable<Reimbursement> {
 	}
 	
 	public Reimbursement(int id, LocalDateTime requested, LocalDateTime resolved, double amount, String description,
-		 Employee requester, Employee approver, ReimbursementStatus status, ReimbursementType type, Object receipt) {
+		 Employee requester, Employee approver, ReimbursementStatus status, ReimbursementType type, InputStream receipt) {
 		this.id = id;
 		this.requested = requested;
 		this.resolved = resolved;
@@ -93,7 +93,7 @@ public class Reimbursement implements Serializable, Comparable<Reimbursement> {
 		this.type = type;
 		this.receipt = receipt;
 	}
-	
+	/*
 	public Reimbursement(int id, LocalDateTime requested, LocalDateTime resolved, double amount, String description,
 			 Employee requester, Employee approver, ReimbursementStatus status, ReimbursementType type) {
 			this.id = id;
@@ -106,7 +106,7 @@ public class Reimbursement implements Serializable, Comparable<Reimbursement> {
 			this.status = status;
 			this.type = type;
 		}
-
+*/
 	public int getId() {
 		return id;
 	}
@@ -147,11 +147,11 @@ public class Reimbursement implements Serializable, Comparable<Reimbursement> {
 		this.description = description;
 	}
 
-	public Object getReceipt() {
+	public InputStream getReceipt() {
 		return receipt;
 	}
 
-	public void setReceipt(Object receipt) {
+	public void setReceipt(InputStream receipt) {
 		this.receipt = receipt;
 	}
 

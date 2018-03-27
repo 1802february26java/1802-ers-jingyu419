@@ -42,6 +42,10 @@ public class EmployeeToken implements Serializable {
 	private Employee requester;
 
 	public EmployeeToken() {}
+	
+	public EmployeeToken(String token){
+		this.token = token;
+	}
    
 	public EmployeeToken(LocalDateTime creationDate, Employee requester){
 		this.creationDate = creationDate;

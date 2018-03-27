@@ -181,11 +181,13 @@ public class EmployeeInformationControllerAlpha implements EmployeeInformationCo
 		   logger.trace("We are in usernameExists method. return a message.");
 		   
            Employee employee = new Employee(request.getParameter("username"));
-           
+           logger.trace("Check what username we receive"+employee);
 		   if(EmployeeServiceAlpha.getInstance().isUsernameTaken(employee)){
+			   logger.trace("This username has been taken");
 			   return new ClientMessage("This username has been taken.");
 		   }
 		   else{
+			   logger.trace("This username has not been taken");
 			   return new ClientMessage("This username has not been taken.");
 		   }
 			   
