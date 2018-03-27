@@ -1,5 +1,6 @@
 package com.revature.service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -144,13 +145,22 @@ public class EmployeeServiceAlpha implements EmployeeService {
 		
 		EmployeeToken token =  EmployeeRepositoryJdbc.getInstance().selectEmployeeToken(employeeToken);
 		
-		logger.trace(token);
+		logger.trace(token);		
 		
 		if(token.getId() == 0){
 			return true;
 		}
 		else{
+			logger.trace("Check if the token was created 3 mins earlier. "+token.getCreationDate());
+			logger.trace("The duration between creation time and now time: "+(180L-Duration.between(token.getCreationDate(), LocalDateTime.now()).getSeconds()));
+			boolean boolIsMoreThanThreeMins = (180L-Duration.between(token.getCreationDate(), LocalDateTime.now()).getSeconds())>0?false:true;
 			
+			//If the token was created 3 mins ago, delete it and return true;
+			if (boolIsMoreThanThreeMins){
+				EmployeeRepositoryJdbc.getInstance().deleteEmployeeToken(token);
+			return true;	
+			}
+			//The token is valid and not expired
 			return false;
 		}
 		
@@ -161,7 +171,8 @@ public class EmployeeServiceAlpha implements EmployeeService {
 		
 		  String subject = "Reset your password";
 		   String body = "Please use below link to reset your password.\n"
-		                 +"http://localhost:8085/ERS/resetPasswordRequest.do?id="+employee.getId()+"&token="+createdToken.getToken()+"\n";
+		                 +"http://localhost:8085/ERS/resetPasswordRequest.do?id="+employee.getId()+"&token="+createdToken.getToken()+"\n"
+		                 +"Note: Above link will become invalid after 3 minutes.";
 		   
 		   String email = employee.getEmail();
 		   

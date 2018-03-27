@@ -39,12 +39,13 @@ function presentAllPendingReimbursements(data) {
       else{
           // we present reimbursements to the user
           //Get reimbursement lsit node
-      
+       //count how many reimbursements we have
+       let counter = 0; 
 
      let reimbursementList = document.getElementById("pendingReimbursementsList");
          reimbursementList.innerHTML="";
   data.forEach((reimbursement)=>{
-           
+         counter = counter + 1;            
          let tr = document.createElement('tr');   
 
          let td1 = document.createElement('td');
@@ -116,7 +117,7 @@ function presentAllPendingReimbursements(data) {
              reimbursementList.appendChild(tr);
           });
 
-
+          document.getElementById("counter").innerHTML =counter;
       }
 }
 
