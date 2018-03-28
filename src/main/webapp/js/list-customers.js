@@ -5,6 +5,10 @@ window.onload = () =>{
     //Get event listener
     document.getElementById("getEmployees").addEventListener("click", getAllEmployees);
     //Get all employees as soon as the page loads
+
+    //filter
+    document.getElementById("filter").addEventListener("keyup",filterTable);
+
     getAllEmployees();
 }
 
@@ -36,12 +40,13 @@ function presentEmployees(data) {
           document.getElementById("listMessage").innerHTML = '<span class="label label-danger label-center">Something went wrong.</span>';
       }
       else{
-
+ //count how many reimbursements we have
+    let counter = 0; 
       let employeeList = document.getElementById("employeeList");
       employeeList.innerHTML="";
 
       data.forEach((employee)=>{
-        
+        counter = counter + 1;
         let tr = document.createElement('tr');  
         let td1 = document.createElement('td'); 
         let td2 = document.createElement('td'); 
@@ -74,7 +79,7 @@ function presentEmployees(data) {
         tr.appendChild(button);
         employeeList.appendChild(tr);
       });
-        
+      document.getElementById("counter").innerHTML =counter;   
       }
 }
 
@@ -83,4 +88,31 @@ function viewReimbursements(obj){
     console.log(rowData.childNodes[0].innerHTML);
     sessionStorage.setItem("selectedEmployeeId", rowData.childNodes[0].innerHTML);
     window.location.replace("multipleRequests.do?fetch=viewSelected");
+}
+
+function filterTable(){
+
+    // Get variables 
+  let filter = document.getElementById("filter").value.toUpperCase();
+  let table = document.getElementById("employeeList");
+  let tr = table.getElementsByTagName("tr");
+  let i, j;
+  // Loop through all rows, hide those do not fit
+  for (i = 0; i < tr.length; i++) {
+
+  loop:  for(j = 0;j<5;j++){
+      td = tr[i].getElementsByTagName("td")[j];
+        if (td) {
+           if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+              break loop;
+         } else {
+              tr[i].style.display = "none";
+              
+         }
+      } 
+      
+    }
+
+  }
 }

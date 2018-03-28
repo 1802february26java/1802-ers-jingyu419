@@ -5,6 +5,10 @@ window.onload = () =>{
     //Get event listener
     document.getElementById("getSelectedReimbursements").addEventListener("click", getSelectedReimbursements);
     //Get all pending reimbursement as soon as the page loads
+
+    //filter
+    document.getElementById("filter").addEventListener("keyup",filterTable);
+
     getSelectedReimbursements();
 }
 
@@ -42,11 +46,12 @@ function presentSelectedReimbursements(data) {
           // we present reimbursements to the user
           //Get reimbursement lsit node
       
-
+//count how many reimbursements we have
+      let counter = 0; 
      let reimbursementList = document.getElementById("selectedReimbursementsList");
          reimbursementList.innerHTML="";
   data.forEach((reimbursement)=>{
-           
+         counter = counter + 1;    
          let tr = document.createElement('tr');   
 
          let td1 = document.createElement('td');
@@ -92,7 +97,35 @@ function presentSelectedReimbursements(data) {
              tr.appendChild(td8);
              reimbursementList.appendChild(tr);
           });
-
+          document.getElementById("counter").innerHTML =counter;
 
       }
+}
+
+
+function filterTable(){
+
+    // Get variables 
+  let filter = document.getElementById("filter").value.toUpperCase();
+  let table = document.getElementById("selectedReimbursementsList");
+  let tr = table.getElementsByTagName("tr");
+  let i, j;
+  // Loop through all rows, hide those do not fit
+  for (i = 0; i < tr.length; i++) {
+
+    loop:  for(j = 0;j<8;j++){
+        td = tr[i].getElementsByTagName("td")[j];
+          if (td) {
+             if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+                break loop;
+           } else {
+                tr[i].style.display = "none";
+                
+           }
+        } 
+        
+      }
+  
+    }
 }
