@@ -43,12 +43,12 @@ function updatePassword(data) {
     
     else if(data.message ==="SOMETHING WENT WRONG"){
         document.getElementById("resetMessage").innerHTML = '<span class="label label-danger label-center">EXPIRED TOKEN.</span>';
-     setTimeout(() =>{ window.location.replace("login.do");}, 1000);
+     setTimeout(() =>{ window.location.replace("login.do");}, 2000);
     }
     else{
 
      document.getElementById("resetMessage").innerHTML = '<span class="label label-danger label-center">EXPIRED TOKEN.</span>';
-     setTimeout(() =>{ window.location.replace("login.do");}, 1000);
+     setTimeout(() =>{ window.location.replace("login.do");}, 2000);
     }
 }
 

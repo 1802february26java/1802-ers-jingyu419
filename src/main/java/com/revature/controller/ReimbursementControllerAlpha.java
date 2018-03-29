@@ -1,10 +1,11 @@
 package com.revature.controller;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.revature.ajax.ClientMessage;
@@ -74,14 +74,8 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
         String imageName = Paths.get(receiptPart.getSubmittedFileName()).getFileName().toString(); 
         logger.trace("fileName"+imageName);
         InputStream receiptFile =  receiptPart.getInputStream();
-        
-        /*
-         * to check if I can base64 for the image
-        byte[] bytes = IOUtils.toByteArray(receiptFile);
-        String encoded = Base64.getEncoder().encodeToString(bytes);
-        logger.trace("Base64: "+encoded);
-        */
-        
+   
+
 		ReimbursementStatus status = new ReimbursementStatus(1,"PENDING");
 		ReimbursementType type = new ReimbursementType(Integer.parseInt(
 				request.getParameter("reimbursementTypeId")),request.getParameter("reimbursementTypeName"));
@@ -92,10 +86,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 				Double.parseDouble(request.getParameter("amount")),request.getParameter("description"),
 				loggedEmployee,manager,status,type,receiptFile);
         logger.trace("current reimbursement data: "+reimbursement);
-        //Check if data is still good. Result: Data is still good in this step
-       // byte[] bytes = IOUtils.toByteArray((InputStream)reimbursement.getReceipt());
-        //String encoded = Base64.getEncoder().encodeToString(bytes);
-        //logger.trace("Base64: "+encoded);
+ 
                 
 		if (ReimbursementServiceAlpha.getInstance().submitRequest(reimbursement)) {			
 			return new ClientMessage("A REIMBURSEMENT HAS BEEN CREATED SUCCESSFULLY");
@@ -107,7 +98,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 	}
 
 	@Override
-	public Object singleRequest(HttpServletRequest request) {
+	public Object singleRequest(HttpServletRequest request) throws IOException {
 
         logger.trace("This is a single request method");
 		
@@ -208,9 +199,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 			else{
 				logger.trace("Maybe here");
 				return "manager-pending-reimbursements-list.html";
-			//	Set<Reimbursement> set = new HashSet<Reimbursement>(ReimbursementServiceAlpha.getInstance().getAllPendingRequests());
-			//	set.addAll(ReimbursementServiceAlpha.getInstance().getAllResolvedRequests());				
-			//	return set;
+		
 			}
 			
 			
@@ -220,7 +209,7 @@ public class ReimbursementControllerAlpha implements ReimbursementController {
 	}
 
 	@Override
-	public Object finalizeRequest(HttpServletRequest request) {
+	public Object finalizeRequest(HttpServletRequest request) throws IOException {
 		
         logger.trace("This method is used to finalize the reimbursement requests.");
 		

@@ -89,7 +89,7 @@ function register(data) {
       if(data.message === "REGISTRATION SUCCESSFUL"){
         document.getElementById("registrationMessage").innerHTML = '<span class="label label-success label-center">Registration successful.</span>';
         
-        setTimeout(() =>{ window.location.replace("login.do");}, 3000);
+        setTimeout(() =>{ window.location.replace("home.do");}, 3000);
        
       }
       else{

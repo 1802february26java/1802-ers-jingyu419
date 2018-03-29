@@ -10,6 +10,7 @@ window.onload = () =>{
     document.getElementById("filter").addEventListener("keyup",filterTable);
 
     getAllPendingReimbursements();
+
 }
 
 function getAllPendingReimbursements(){
@@ -103,7 +104,7 @@ function filterTable(){
   // Loop through all rows, hide those do not fit
   for (i = 0; i < tr.length; i++) {
 
-    loop:  for(j = 0;j<5;j++){
+    loop:  for(j = 0;j<7;j++){
         td = tr[i].getElementsByTagName("td")[j];
           if (td) {
              if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {

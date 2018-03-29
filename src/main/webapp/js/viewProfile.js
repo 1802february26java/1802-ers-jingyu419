@@ -64,7 +64,7 @@ function editProfile(){
 function saveToDatabase(dataToSave){
     if(dataToSave.message === "UPDATE EMPLOYEE INFORMATION SUCCESSFUL"){
         document.getElementById("saveMessage").innerHTML = '<span class="label label-success label-center">Save successful.</span>';
-       
+        setTimeout(() =>{ window.location.replace("viewInformation.do");}, 2000);
       }
       else{
         document.getElementById("saveMessage").innerHTML = '<span class="label label-danger label-center">Something went wrong.</span>';        

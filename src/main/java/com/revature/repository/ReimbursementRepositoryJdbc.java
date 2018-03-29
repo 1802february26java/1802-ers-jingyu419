@@ -2,6 +2,7 @@ package com.revature.repository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,9 +10,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.revature.model.Employee;
@@ -38,10 +39,6 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 		
 		logger.trace("Inserting reimbursement.");
 		
-        //Check if the data is still good here before we save to database.
-        //byte[] bytes = IOUtils.toByteArray(reimbursement.getReceipt());
-        //String encoded = Base64.getEncoder().encodeToString(bytes);
-        //logger.trace("We are in repository insert class. Base64: "+encoded);
         
 		try(Connection connection = ConnectionUtil.getConnection()) {
 			
@@ -58,7 +55,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			statement.setString(++parameterIndex, reimbursement.getDescription());
 			
 			//Receipt
-            statement.setBinaryStream(++parameterIndex, reimbursement.getReceipt());
+            statement.setBinaryStream(++parameterIndex, (InputStream)reimbursement.getReceipt());
             
 	        statement.setInt(++parameterIndex, reimbursement.getRequester().getId());
 			statement.setInt(++parameterIndex, reimbursement.getApprover().getId());
@@ -140,8 +137,10 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 			
 			ResultSet result = statement.executeQuery();
 			
+			Reimbursement reimbursement = new Reimbursement();
+			
 			while(result.next()) {
-				return new Reimbursement(
+				reimbursement = new Reimbursement(
 						result.getInt("RE_R_ID"),
                         result.getTimestamp("RE_R_REQUESTED").toLocalDateTime(),   
                         (result.getString("RS_RS_STATUS").equals("PENDING"))?null:result.getTimestamp("RE_R_RESOLVED").toLocalDateTime(), 
@@ -159,10 +158,24 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
                         new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE")),
                       //ADDING RECEIPT HERE  
-                        result.getBinaryStream("RE_R_RECEIPT")
+                        result.getBlob("RE_R_RECEIPT")
 						);
 			}
-
+			 logger.trace("We are converting from blob to base64");
+			 logger.trace("step 1");
+		      Blob b=(Blob)reimbursement.getReceipt();  
+		      logger.trace("step 2");
+		      logger.trace(b.length());
+		      logger.trace("step 3");
+		      logger.trace(b.getBytes(1, (int)b.length()));
+		      byte[] bytes = b.getBytes(1, (int)b.length());
+		      String encoded = Base64.getEncoder().encodeToString(bytes);
+		        logger.trace("step 4: Base64: "+encoded);
+		        reimbursement.setReceipt(encoded);
+		        logger.trace("Current reimbursement: "+reimbursement);
+		        logger.trace("current receipt data in the reimbursement:"+(String)reimbursement.getReceipt());
+			return reimbursement;
+		     
 		} catch (SQLException e) {
 			logger.error("Error while selecting all reimbursements for this particular reimbursement Id.", e);
 		}
@@ -352,11 +365,33 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
                         new ReimbursementStatus(result.getInt("RE_RS_ID"),result.getString("RS_RS_STATUS")),
                         new ReimbursementType(result.getInt("RE_RT_ID"),result.getString("RT_RT_TYPE")),
                       //ADDING RECEIPT HERE  
-                        result.getBinaryStream("RE_R_RECEIPT")
+                        result.getBlob("RE_R_RECEIPT")
 						));
 			}
+			
 			logger.trace(set);
-			return set;
+			
+			Iterator<Reimbursement> it = set.iterator();
+			Set<Reimbursement> newSet = new HashSet<>();
+		     while(it.hasNext()){
+		        Reimbursement reimbursement = it.next();
+		        logger.trace("We are converting from blob to base64");
+				logger.trace("step 1");
+				Blob b=(Blob)reimbursement.getReceipt();  
+			    logger.trace("step 2");
+			    logger.trace(b.length());
+			    logger.trace("step 3");
+			    logger.trace(b.getBytes(1, (int)b.length()));
+			    byte[] bytes = b.getBytes(1, (int)b.length());
+			    String encoded = Base64.getEncoder().encodeToString(bytes);
+			    logger.trace("step 4: Base64: "+encoded);
+			    reimbursement.setReceipt(encoded);
+			    logger.trace("Current reimbursement: "+reimbursement);
+			    logger.trace("current receipt data in t.he reimbursement:"+(String)reimbursement.getReceipt());
+			    newSet.add(reimbursement);
+		     }
+			   logger.trace("newSet: "+newSet);
+			return newSet;
 		} catch (SQLException e) {
 			logger.error("Error while selecting all PENDING reimbursement.", e);
 		}
@@ -456,7 +491,7 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
 	}
 	
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) {
 		
 		ReimbursementRepositoryJdbc repository = new ReimbursementRepositoryJdbc();
 
@@ -473,39 +508,62 @@ public class ReimbursementRepositoryJdbc implements ReimbursementRepository {
         //		2	COURSE
         //		1	OTHER
         //		4	TRAVELING
-		
-//		File blob = new File("src/main/resources/images/test1.jpg");
-//		InputStream in = null;
-//		try {
-//			in = new FileInputStream(blob);
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}		
-		
+
 	//	Reimbursement reimbursement = new Reimbursement(21,LocalDateTime.now(),null,
 	//			     1000D,"Saturday",employee,manager,status,type); 
 		
 	//	logger.trace("Inserting a new Reimbursement: "+repository.insert(reimbursement));
 		//logger.trace(repository.update(reimbursement));
-		logger.trace(repository.select(172));
-		Reimbursement reimbursement = repository.select(172);
-		InputStream receiptFile = (InputStream)reimbursement.getReceipt();
-		logger.trace(receiptFile.available());
-		//byte[] bytes = IOUtils.toByteArray(receiptFile);
-        //String encoded = Base64.getEncoder().encodeToString(bytes);
-       // logger.trace("Base64: "+encoded);
-//        byte byteArray[];
-//		try {
-//			byteArray = blob.getBytes(1, (int)blob.length());
-//	         logger.trace(blob);
-//	        // logger.trace(byteArray[0]);
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-// 
+		
+		
+//		
+//    try(Connection connection = ConnectionUtil.getConnection()) {
+	    // logger.trace("reimbursement"+repository.select(222));
+//	      Reimbursement reimbursement = repository.select(222);
+//	     logger.trace("save it to local 1");
+//	      Blob b=(Blob)reimbursement.getReceipt();  
+//	      logger.trace("2");
+//	      logger.trace(b.length());
+//	      logger.trace("3");
+//	      logger.trace(b.getBytes(1, (int)b.length()));
+//		   }
+//         catch (SQLException e) {
+//	      logger.error("Retrieved faied.", e);
+//            }
+
+        
+		
+		
+//		logger.trace("save it to local 2");
+	//	logger.trace(b.getBinaryStream());
+	//	logger.trace(b.getBytes(1, 10));
+//		logger.trace("save it to local 3");
+	//	InputStream imgInS=b.getBinaryStream();
+        
+        //OutputStream imgOuS=new FileOutputStream(new File("test.png"));
+		//byte barr[]=b.getBytes(1,(int)b.length());//1 means first image  
+	
+		//logger.trace("save it to local 3");             
+		//FileOutputStream fout=new FileOutputStream("C:/picture/test.png");  
+		//logger.trace("save it to local 4");   
+		//fout.write(barr);  
+		              
+		//fout.close();  
+		//InputStream receiptFile = (InputStream)reimbursement.getReceipt();
+		//logger.trace(receiptFile.available());
+		//OutputStream outputStream = new FileOutputStream("C:/picture/test.png");
+		 //int bytesRead = -1;
+		 //        byte[] buffer = new byte[1024];
+		 //        while ((bytesRead = receiptFile.read(buffer)) != -1) {
+		 //            outputStream.write(buffer, 0, bytesRead);
+		 //        }
+		 //        receiptFile.close();
+		 //        outputStream.close();
+
+
+ 
 		//logger.trace(repository.selectPending(90));
-		 //logger.trace(repository.selectAllPending());
+		 logger.trace(repository.selectAllPending());
 		 // logger.trace(repository.selectAllFinalized());
 		//logger.trace(repository.selectFinalized(1));
 		//logger.trace(repository.selectTypes());

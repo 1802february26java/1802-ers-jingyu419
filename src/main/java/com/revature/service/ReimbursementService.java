@@ -42,8 +42,10 @@ public interface ReimbursementService {
 	 * Returns a single reimbursement request information.
 	 * 
 	 * The parameter should at least contain the reimbursement id.
+	 * @throws IOException 
+	 * 
 	 */
-	public Reimbursement getSingleRequest(Reimbursement reimbursement);
+	public Reimbursement getSingleRequest(Reimbursement reimbursement) throws IOException;
 	
 	/**
 	 * Returns a set of PENDING requests of a specific employee.

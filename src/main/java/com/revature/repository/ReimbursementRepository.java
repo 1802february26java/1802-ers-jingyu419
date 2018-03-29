@@ -40,8 +40,9 @@ public interface ReimbursementRepository {
 	 * Returns a single reimbursement request.
 	 * 
 	 * A join should be performed with respective reimbursement status and type.
+	 * @throws IOException 
 	 */
-	public Reimbursement select(int reimbursementId);
+	public Reimbursement select(int reimbursementId) throws IOException;
 	
 	/**
 	 * Returns a set of PENDING requests of a specific employee.

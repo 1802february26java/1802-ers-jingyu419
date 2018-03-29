@@ -61,7 +61,7 @@
                     <h3> Total: <span id="counter"></span></h3>
                     <input type="text" id="filter" class="form-control" placeholder="Search...">
                 </div>        
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered table-hover" id="table">
                  <thead>
                      <tr>
                         <th scope="col" class="col-sm-1">Reimbursement ID</th> 
@@ -69,8 +69,8 @@
                         <th scope="col" class="col-sm-1">Amount($)</th>
                         <th scope="col" class="col-sm-3">Description</th>
                         <th scope="col" class="col-sm-1">Approver name</th>
-                        <th scope="col" class="col-sm-1">Request status</th>
-                        <th scope="col" class="col-sm-2">Request type</th>
+                        <th scope="col" class="col-sm-1">Request type</th>
+                        <th scope="col" class="col-sm-2">Request status</th>
                     </tr>
                  </thead>
                  <tbody id="pendingReimbursementsList" >                               
@@ -83,7 +83,7 @@
                 </div>
             </div>
         </div>
-
+        
     <script src="js/viewPendingReimbursements.js"></script>
 </body>
 </html>

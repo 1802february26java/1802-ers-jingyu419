@@ -50,6 +50,8 @@ function presentAllPendingReimbursements(data) {
      let reimbursementList = document.getElementById("pendingReimbursementsList");
          reimbursementList.innerHTML="";
   data.forEach((reimbursement)=>{
+        // console.log("receipt "+reimbursement.receipt);
+        //<img src="data:image/png;base64, />
          counter = counter + 1;            
          let tr = document.createElement('tr');   
 
@@ -59,6 +61,10 @@ function presentAllPendingReimbursements(data) {
          let td4 = document.createElement('td');
          let td5 = document.createElement('td');
          let td6 = document.createElement('td');
+         let tdReceipt = document.createElement('td');
+         let imgReceipt = document.createElement('img');
+         imgReceipt.src = `data:image/png;base64,${reimbursement.receipt}`;
+         imgReceipt.className="img-responsive";
          //td7 is reimbursement status
          let td7 = document.createElement('td');
 
@@ -105,6 +111,7 @@ function presentAllPendingReimbursements(data) {
              selectList.appendChild(option1);
              selectList.appendChild(option2);
              selectList.appendChild(option3);
+             tdReceipt.appendChild(imgReceipt);
              td7.appendChild(selectList);
              //td8
              button2.appendChild(textButton2);
@@ -116,6 +123,7 @@ function presentAllPendingReimbursements(data) {
              tr.appendChild(td4);
              tr.appendChild(td5);
              tr.appendChild(td6);
+             tr.appendChild(tdReceipt);
              tr.appendChild(td7);
              tr.appendChild(td8);
 
@@ -136,7 +144,7 @@ function finalizedReimbursement(obj){
    //console.log(rowIndex);
    //console.log(rowData);
    //console.log(rowData.childNodes[6]);
-   let statusCode =rowData.childNodes[6].childNodes[0].value ;
+   let statusCode =rowData.childNodes[7].childNodes[0].value ;
    let reimbursementId = rowData.childNodes[0].innerHTML;
    //console.log(statusCode);
    //console.log(rowData.childNodes[0].innerHTML);

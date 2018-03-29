@@ -163,7 +163,7 @@ public class EmployeeRepositoryJdbc implements EmployeeRepository {
 		
 		try(Connection connection = ConnectionUtil.getConnection()) {
 			
-		    String sql = "SELECT * FROM USER_T,USER_ROLE WHERE USER_T.UR_ID = USER_ROLE.UR_ID";
+		    String sql = "SELECT * FROM USER_T,USER_ROLE WHERE USER_T.UR_ID = USER_ROLE.UR_ID AND USER_T.UR_ID =1";
 			
 			PreparedStatement statement = connection.prepareStatement(sql);
 

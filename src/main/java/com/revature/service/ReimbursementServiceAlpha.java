@@ -42,7 +42,7 @@ public class ReimbursementServiceAlpha implements ReimbursementService {
 	}
 
 	@Override
-	public Reimbursement getSingleRequest(Reimbursement reimbursement) {
+	public Reimbursement getSingleRequest(Reimbursement reimbursement) throws IOException {
 		
 		return ReimbursementRepositoryJdbc.getInstance().select(reimbursement.getId());
 		
