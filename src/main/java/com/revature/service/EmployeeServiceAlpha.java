@@ -29,7 +29,12 @@ public class EmployeeServiceAlpha implements EmployeeService {
 	public Employee authenticate(Employee employee) {
 	
 		Employee loggedEmployee = EmployeeRepositoryJdbc.getInstance().select(employee.getUsername());
-						
+		
+		if(loggedEmployee.getId()==0){
+			loggedEmployee.setPassword("");
+		}
+		logger.trace("loggedEmployee: "+loggedEmployee);
+		
 	    if(loggedEmployee.getPassword().equals(EmployeeRepositoryJdbc.getInstance().getPasswordHash(employee))) {
 	    	
 		     return loggedEmployee;

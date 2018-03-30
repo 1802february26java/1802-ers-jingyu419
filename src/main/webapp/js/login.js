@@ -50,12 +50,6 @@ function login(data) {
           sessionStorage.setItem("email",data.email);
           sessionStorage.setItem("employeeRole",JSON.stringify(data.employeeRole));
 
-          //check if I can retrive employee role correctly or not
-        //   let temp = sessionStorage.getItem('employeeRole');
-        //   let viewEmployeeRole = JSON.parse(temp);
-        //   console.log(viewEmployeeRole.id);
-        //   console.log(viewEmployeeRole.type);
-         
           
           window.location.replace("home.do");
       }

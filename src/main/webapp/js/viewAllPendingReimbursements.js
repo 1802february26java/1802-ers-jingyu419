@@ -11,6 +11,17 @@ window.onload = () =>{
 
     
     getAllPendingReimbursements();
+
+    var images = document.querySelectorAll('img');
+       for(var i=0, len = images.length; i < len; i++){
+         images[i].addEventListener('click', openModal);
+       }
+
+
+}
+
+function openModal(){
+    console.log("hello");
 }
 
 function getAllPendingReimbursements(){
@@ -50,8 +61,7 @@ function presentAllPendingReimbursements(data) {
      let reimbursementList = document.getElementById("pendingReimbursementsList");
          reimbursementList.innerHTML="";
   data.forEach((reimbursement)=>{
-        // console.log("receipt "+reimbursement.receipt);
-        //<img src="data:image/png;base64, />
+        
          counter = counter + 1;            
          let tr = document.createElement('tr');   
 
@@ -65,6 +75,7 @@ function presentAllPendingReimbursements(data) {
          let imgReceipt = document.createElement('img');
          imgReceipt.src = `data:image/png;base64,${reimbursement.receipt}`;
          imgReceipt.className="img-responsive";
+         imgReceipt.setAttribute("onclick","openModal()");
          //td7 is reimbursement status
          let td7 = document.createElement('td');
 
@@ -137,17 +148,13 @@ function presentAllPendingReimbursements(data) {
 
 
 function finalizedReimbursement(obj){
-    
-  // let rowIndex = obj.parentNode.parentNode.rowIndex;
+
    let rowData = obj.parentNode.parentNode;
 
-   //console.log(rowIndex);
-   //console.log(rowData);
-   //console.log(rowData.childNodes[6]);
+ 
    let statusCode =rowData.childNodes[7].childNodes[0].value ;
    let reimbursementId = rowData.childNodes[0].innerHTML;
-   //console.log(statusCode);
-   //console.log(rowData.childNodes[0].innerHTML);
+   
 
    let statusID;
    if(statusCode === 'APPROVED'){
